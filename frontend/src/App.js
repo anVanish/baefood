@@ -6,6 +6,7 @@ import './assets/styles/style.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { Routes, Route } from 'react-router-dom';
+import ProtectedRoute from './utils/ProtectedRoute';
 
 import Header from './components/common/Header';
 import Footer from './components/common/Footer';
@@ -18,6 +19,7 @@ import Cart from './pages/Cart';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { toast, ToastContainer } from 'react-toastify';
+import LoginModal from './components/common/LoginModal';
 import { useEffect } from 'react';
 import { clearToast } from './slices/toastSlice';
 
@@ -37,29 +39,32 @@ function App() {
         <div className="App">
             <div className="sub_page">
                 <ToastContainer />
+                <LoginModal />
                 <Header />
                 <main>
                     <Routes>
-                        <Route
-                            exact
-                            path="/"
-                            element={<Home />}
-                        />
-                        <Route
-                            exact
-                            path="/favorites"
-                            element={<Favorite />}
-                        />
-                        <Route
-                            exact
-                            path="/carts"
-                            element={<Cart />}
-                        />
-                        <Route
-                            exact
-                            path="/orders"
-                            element={<Order />}
-                        />
+                        <Route element={<ProtectedRoute />}>
+                            <Route
+                                exact
+                                path="/"
+                                element={<Home />}
+                            />
+                            <Route
+                                exact
+                                path="/favorites"
+                                element={<Favorite />}
+                            />
+                            <Route
+                                exact
+                                path="/carts"
+                                element={<Cart />}
+                            />
+                            <Route
+                                exact
+                                path="/orders"
+                                element={<Order />}
+                            />
+                        </Route>
                         <Route
                             path="*"
                             element={<NotFound />}

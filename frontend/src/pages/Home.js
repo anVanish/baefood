@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import FoodCard from '../components/common/FoodCard';
 import { useDispatch } from 'react-redux';
+import { openModal } from '../slices/loginModalSlice';
 
 const Home = () => {
     const dispatch = useDispatch();
@@ -12,6 +13,7 @@ const Home = () => {
     const foods = [{}, {}, {}, {}, {}];
 
     const filterByCategory = (id) => {
+        dispatch(openModal());
         setActiveCategory(id);
     };
 
