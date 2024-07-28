@@ -12,6 +12,8 @@ import Footer from './components/common/Footer';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import Favorite from './pages/Favorite';
+import Order from './pages/Order';
+import Cart from './pages/Cart';
 
 function App() {
     return (
@@ -29,6 +31,16 @@ function App() {
                             exact
                             path="/favorites"
                             element={<Favorite />}
+                        />
+                        <Route
+                            exact
+                            path="/carts"
+                            element={<Cart />}
+                        />
+                        <Route
+                            exact
+                            path="/orders"
+                            element={<Order />}
                         />
                         <Route
                             path="*"
