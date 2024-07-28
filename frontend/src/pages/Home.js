@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import FoodCard from '../components/common/FoodCard';
+import { useDispatch } from 'react-redux';
 
 const Home = () => {
+    const dispatch = useDispatch();
+
     const [activeCategory, setActiveCategory] = useState(-1);
 
     const categories = ['Canh', 'Chiên', 'Xào', 'Hấp', 'Nước', 'Khác'];
@@ -10,7 +13,6 @@ const Home = () => {
 
     const filterByCategory = (id) => {
         setActiveCategory(id);
-        console.log(`Click on category ${id}`);
     };
 
     return (

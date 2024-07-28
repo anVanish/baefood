@@ -3,6 +3,7 @@ import './assets/styles/bootstrap.css';
 import './assets/styles/font-awesome.min.css';
 import './assets/styles/responsive.css';
 import './assets/styles/style.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { Routes, Route } from 'react-router-dom';
 
@@ -15,10 +16,27 @@ import Favorite from './pages/Favorite';
 import Order from './pages/Order';
 import Cart from './pages/Cart';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { toast, ToastContainer } from 'react-toastify';
+import { useEffect } from 'react';
+import { clearToast } from './slices/toastSlice';
+
 function App() {
+    const dispatch = useDispatch();
+    const toastData = useSelector((state) => state.toast);
+
+    useEffect(() => {
+        if (toastData) {
+            const { message, type } = toastData;
+            toast[type](message, { autoClose: 2000 });
+            dispatch(clearToast);
+        }
+    }, [toastData, dispatch]);
+
     return (
         <div className="App">
             <div className="sub_page">
+                <ToastContainer />
                 <Header />
                 <main>
                     <Routes>
