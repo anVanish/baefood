@@ -12,10 +12,15 @@ const Home = () => {
     const [user, setUser] = useState(null);
     const {
         foods,
+        page,
+        total,
         loading: foodLoading,
         error: foodError,
     } = useSelector((state) => state.food);
     const { categories } = useSelector((state) => state.category);
+    const [activeCategory, setActiveCategory] = useState('');
+
+    const [displayedFoods, setDisplayedFoods] = useState([]);
 
     //init data
     useEffect(() => {
@@ -23,18 +28,28 @@ const Home = () => {
         if (storedUser) {
             setUser(JSON.parse(storedUser));
             dispatch(closeModal());
-            dispatch(getFoods(''));
+            dispatch(getFoods({ categoryId: '', page: 0 }));
             dispatch(getCategories());
         } else {
             dispatch(openModal({ isAdmin: false }));
         }
     }, [dispatch]);
 
-    const [activeCategory, setActiveCategory] = useState('');
+    //update displayed foods
+    useEffect(() => {
+        setDisplayedFoods([...displayedFoods, ...foods]);
+    }, [foods, dispatch]);
 
+    //filter foods by category
     const filterByCategory = (categoryId) => {
-        dispatch(getFoods({ categoryId })); //dispatch to get foods by category id
+        setDisplayedFoods([]);
         setActiveCategory(categoryId);
+        dispatch(getFoods({ categoryId, page: 0 })); //dispatch to get foods by category id
+    };
+
+    //view more button
+    const viewMore = () => {
+        dispatch(getFoods({ page: page + 1, categoryId: activeCategory }));
     };
 
     return (
@@ -47,7 +62,7 @@ const Home = () => {
                         <div className="heading_container heading_center">
                             <h2>Menu Bếp Iu</h2>
                         </div>
-
+                        {/* load category */}
                         <ul className="filters_menu">
                             <li
                                 className={
@@ -71,7 +86,7 @@ const Home = () => {
                                 </li>
                             ))}
                         </ul>
-
+                        {/* load food  */}
                         <div className="filters-content">
                             <div className="row grid">
                                 {foodLoading ? (
@@ -79,18 +94,20 @@ const Home = () => {
                                 ) : foodError ? (
                                     <p style={{ color: 'red' }}>{foodError}</p>
                                 ) : (
-                                    foods.map((food, index) => (
+                                    displayedFoods.map((food) => (
                                         <FoodCard
-                                            key={index}
+                                            key={food._id}
                                             food={food}
                                         />
                                     ))
                                 )}
                             </div>
                         </div>
-                        <div className="btn-box">
-                            <Link to="">Xem thêm</Link>
-                        </div>
+                        {displayedFoods.length < total && (
+                            <div className="btn-box">
+                                <Link onClick={viewMore}>Xem thêm</Link>
+                            </div>
+                        )}
                     </div>
                 </section>
             )}

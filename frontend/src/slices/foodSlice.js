@@ -5,10 +5,12 @@ import { getAuthorizationHeader } from '../utils/AuthorizationHeader';
 
 export const getFoods = createAsyncThunk(
     'foods/list',
-    async ({ categoryId }, { rejectWithValue }) => {
+    async ({ page = 0, limit = 9, categoryId }, { rejectWithValue }) => {
         try {
             const response = await axios.get(
-                `api/v1/foods?categoryId=${categoryId || ''}`,
+                `api/v1/foods?categoryId=${
+                    categoryId || ''
+                }&page=${page}&limit=${limit}`,
                 { ...getAuthorizationHeader() }
             );
 
@@ -32,7 +34,9 @@ const foodSlices = createSlice({
     name: 'food',
     initialState: {
         foods: [],
+        total: 0,
         loading: false,
+        page: 0,
         error: null,
     },
     extraReducers: (builder) => {
@@ -42,8 +46,11 @@ const foodSlices = createSlice({
                 state.error = null;
             })
             .addCase(getFoods.fulfilled, (state, action) => {
+                const { foods, total, page } = action.payload.data;
                 state.loading = false;
-                state.foods = action.payload.data.foods;
+                state.foods = foods;
+                state.total = total;
+                state.page = page;
             })
             .addCase(getFoods.rejected, (state, action) => {
                 state.loading = false;
