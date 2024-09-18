@@ -44,7 +44,7 @@ const Home = () => {
         } else {
             setDisplayedFoods((prevFoods) => [...prevFoods, ...foods]);
         }
-    }, [foods]);
+    }, [foods, page]);
 
     // Filter foods by category
     const filterByCategory = (categoryId) => {
