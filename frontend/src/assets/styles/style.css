@@ -1038,3 +1038,13 @@ a:focus {
     border-radius: 0 0 0 45px;
     padding: 25px;
 }
+
+select {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    color: #333;
+    margin-bottom: 1rem;
+}

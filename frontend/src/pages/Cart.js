@@ -5,11 +5,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { closeModal, openModal } from '../slices/loginModalSlice';
 import LoginModal from '../components/common/LoginModal';
 import { getCart } from '../slices/cartSlice';
+import OrderOptionModal from '../components/common/OrderOptionModal';
 
 const Cart = () => {
     const dispatch = useDispatch();
     const { carts } = useSelector((state) => state.cart);
     const [user, setUser] = useState(null);
+    const [isModalShow, setIsModalShow] = useState(false);
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -21,6 +23,18 @@ const Cart = () => {
             dispatch(openModal({ isAdmin: false }));
         }
     }, [dispatch]);
+
+    const handleModalOpen = () => {
+        setIsModalShow(true);
+    };
+
+    const handleModalClose = () => {
+        setIsModalShow(false);
+    };
+
+    const handleModalSubmit = ({ serveDate, serveTime }) => {
+        alert(`You choose ${serveTime} : ${serveDate}`);
+    };
 
     return (
         <>
@@ -54,12 +68,18 @@ const Cart = () => {
                         </div>
                         {carts.length > 0 && (
                             <div className="btn-box">
-                                <Link to="">Lên món</Link>
+                                <Link onClick={handleModalOpen}>Lên món</Link>
                             </div>
                         )}
                     </div>
                 </section>
             )}
+
+            <OrderOptionModal
+                show={isModalShow}
+                handleClose={handleModalClose}
+                handleSubmit={handleModalSubmit}
+            />
         </>
     );
 };
