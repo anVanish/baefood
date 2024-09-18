@@ -28,6 +28,7 @@ const Home = () => {
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
             setUser(JSON.parse(storedUser));
+            setDisplayedFoods([]);
             dispatch(closeModal());
             dispatch(getFoods({ categoryId: '', page: 0 }));
             dispatch(getCategories());
@@ -38,7 +39,11 @@ const Home = () => {
 
     //update displayed foods
     useEffect(() => {
-        setDisplayedFoods((prevFoods) => [...prevFoods, ...foods]);
+        if (parseInt(page, 10) === 0) {
+            setDisplayedFoods(foods);
+        } else {
+            setDisplayedFoods((prevFoods) => [...prevFoods, ...foods]);
+        }
     }, [foods]);
 
     // Filter foods by category
