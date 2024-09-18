@@ -99,6 +99,12 @@ const Home = () => {
                                     <p>Loading...</p>
                                 ) : foodError ? (
                                     <p style={{ color: 'red' }}>{foodError}</p>
+                                ) : displayedFoods.length === 0 ? (
+                                    <div className="col-sm-12 col-lg-12">
+                                        <p className="text-center pt-4">
+                                            Chưa có món nào bé ơi!!
+                                        </p>
+                                    </div>
                                 ) : (
                                     displayedFoods.map((food) => (
                                         <FoodCard
