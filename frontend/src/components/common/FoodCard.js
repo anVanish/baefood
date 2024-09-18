@@ -3,17 +3,13 @@ import { Link } from 'react-router-dom';
 import CartIcon from './CartIcon';
 
 const FoodCard = ({ food, isCart }) => {
-    food.name = 'Canh chua';
-    food.description = 'Canh chua nha lam';
-    food.chef = 'Khanh An';
-
     return (
         <div className="col-sm-6 col-lg-4">
             <div className="box">
                 <div>
                     <div className="img-box">
                         <img
-                            src="images/f1.png"
+                            src=""
                             alt=""
                         />
                     </div>

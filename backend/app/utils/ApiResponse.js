@@ -1,20 +1,20 @@
 
 class ApiResponse{
     constructor(){
-        this.sucess = true
+        this.success = true
         this.message = ''
         this.data = {}
     }
 
     setSuccess(message=''){
         this.message = message
-        this.sucess = true
+        this.success = true
         return this
     } 
 
     setError(message=''){
         this.message = message
-        this.sucess = false
+        this.success = false
         return this
     }
 

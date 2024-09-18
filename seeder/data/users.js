@@ -1,0 +1,4 @@
+exports.usersData = [{
+    'email': '',
+    'password': '',
+}]

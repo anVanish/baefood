@@ -1,25 +1,40 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import FoodCard from '../components/common/FoodCard';
-import { useDispatch } from 'react-redux';
-import { openModal } from '../slices/loginModalSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { closeModal, openModal } from '../slices/loginModalSlice';
 import LoginModal from '../components/common/LoginModal';
+import { getFoods } from '../slices/foodSlice';
+import { getCategories } from '../slices/categorySlice';
 
 const Home = () => {
     const dispatch = useDispatch();
+    const [user, setUser] = useState(null);
+    const {
+        foods,
+        loading: foodLoading,
+        error: foodError,
+    } = useSelector((state) => state.food);
+    const { categories } = useSelector((state) => state.category);
 
-    //check login
-    const user = localStorage.getItem('user');
-    if (!user) dispatch(openModal({ isAdmin: false }));
+    //init data
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+            dispatch(closeModal());
+            dispatch(getFoods(''));
+            dispatch(getCategories());
+        } else {
+            dispatch(openModal({ isAdmin: false }));
+        }
+    }, [dispatch]);
 
-    const [activeCategory, setActiveCategory] = useState(-1);
+    const [activeCategory, setActiveCategory] = useState('');
 
-    const categories = ['Canh', 'Chiên', 'Xào', 'Hấp', 'Nước', 'Khác'];
-    const foods = [{}, {}, {}, {}, {}];
-
-    const filterByCategory = (id) => {
-        dispatch(openModal());
-        setActiveCategory(id);
+    const filterByCategory = (categoryId) => {
+        dispatch(getFoods({ categoryId })); //dispatch to get foods by category id
+        setActiveCategory(categoryId);
     };
 
     return (
@@ -36,30 +51,41 @@ const Home = () => {
                         <ul className="filters_menu">
                             <li
                                 className={
-                                    activeCategory === -1 ? 'active' : ''
+                                    activeCategory === '' ? 'active' : ''
                                 }
-                                onClick={() => filterByCategory(-1)}
+                                onClick={() => filterByCategory('')}
                             >
                                 Tất cả
                             </li>
-                            {categories.map((cate, index) => (
+                            {categories.map((cate) => (
                                 <li
-                                    key={index}
+                                    key={cate._id}
                                     className={
-                                        activeCategory === index ? 'active' : ''
+                                        activeCategory === cate._id
+                                            ? 'active'
+                                            : ''
                                     }
-                                    onClick={() => filterByCategory(index)}
+                                    onClick={() => filterByCategory(cate._id)}
                                 >
-                                    {cate}
+                                    {cate.name}
                                 </li>
                             ))}
                         </ul>
 
                         <div className="filters-content">
                             <div className="row grid">
-                                {foods.map((food) => (
-                                    <FoodCard food={food} />
-                                ))}
+                                {foodLoading ? (
+                                    <p>Loading...</p>
+                                ) : foodError ? (
+                                    <p style={{ color: 'red' }}>{foodError}</p>
+                                ) : (
+                                    foods.map((food, index) => (
+                                        <FoodCard
+                                            key={index}
+                                            food={food}
+                                        />
+                                    ))
+                                )}
                             </div>
                         </div>
                         <div className="btn-box">

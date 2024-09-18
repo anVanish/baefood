@@ -10,9 +10,11 @@ export const login = createAsyncThunk(
                 email,
                 password,
             });
+
             const data = response.data;
 
             if (data.success) {
+                toast.success('Đăng nhập thành công');
                 return data;
             } else {
                 return rejectWithValue(data.message);
@@ -21,7 +23,7 @@ export const login = createAsyncThunk(
             if (!error.response) {
                 throw error;
             }
-            return rejectWithValue(error.response)
+            return rejectWithValue(error.response.data.message);
         }
     }
 );
@@ -51,6 +53,12 @@ const authSlice = createSlice({
                 state.error = null;
                 state.user = action.payload.data.user;
                 state.token = action.payload.data.token;
+
+                localStorage.setItem(
+                    'user',
+                    JSON.stringify(action.payload.data.user)
+                );
+                localStorage.setItem('token', action.payload.data.token);
             })
             .addCase(login.rejected, (state, action) => {
                 state.loading = false;
