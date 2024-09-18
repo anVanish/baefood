@@ -6,7 +6,6 @@ import './assets/styles/style.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { Routes, Route } from 'react-router-dom';
-import ProtectedRoute from './utils/ProtectedRoute';
 
 import Header from './components/common/Header';
 import Footer from './components/common/Footer';
@@ -43,28 +42,26 @@ function App() {
                 <Header />
                 <main>
                     <Routes>
-                        <Route element={<ProtectedRoute />}>
-                            <Route
-                                exact
-                                path="/"
-                                element={<Home />}
-                            />
-                            <Route
-                                exact
-                                path="/favorites"
-                                element={<Favorite />}
-                            />
-                            <Route
-                                exact
-                                path="/carts"
-                                element={<Cart />}
-                            />
-                            <Route
-                                exact
-                                path="/orders"
-                                element={<Order />}
-                            />
-                        </Route>
+                        <Route
+                            exact
+                            path="/"
+                            element={<Home />}
+                        />
+                        <Route
+                            exact
+                            path="/favorites"
+                            element={<Favorite />}
+                        />
+                        <Route
+                            exact
+                            path="/carts"
+                            element={<Cart />}
+                        />
+                        <Route
+                            exact
+                            path="/orders"
+                            element={<Order />}
+                        />
                         <Route
                             path="*"
                             element={<NotFound />}

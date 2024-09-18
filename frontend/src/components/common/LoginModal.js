@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Modal from 'react-modal';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeModal } from '../../slices/loginModalSlice';
-import { showToast } from '../../slices/toastSlice';
+import { login } from '../../slices/authSlice';
 
 const customStyles = {
     content: {
@@ -25,20 +25,16 @@ Modal.setAppElement('#root');
 const LoginModal = () => {
     const dispatch = useDispatch();
     const loginModal = useSelector((state) => state.loginModal);
+    const auth = useSelector((state) => state.auth);
 
     const email = loginModal.isAdmin
         ? 'sosvanish@gmail.com'
         : 'camnhii1202@gmail.com';
     const [password, setPassword] = useState('');
 
-    const handleLogin = () => {
-        dispatch(
-            showToast({
-                message: `Login successfully ${password} ${email}`,
-                type: 'success',
-            })
-        );
-        dispatch(closeModal());
+    const handleLogin = (e) => {
+        e.preventDefault();
+        dispatch(login({ email, password }));
     };
 
     return (
@@ -67,7 +63,7 @@ const LoginModal = () => {
                     className="btn btn-root btn-block btn-round mt-4"
                     onClick={handleLogin}
                 >
-                    Đăng nhập
+                    {auth && auth.loading ? 'Đang đăng nhập...' : `Đăng nhập`}
                 </button>
             </form>
         </Modal>
