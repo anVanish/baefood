@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { toast } from 'react-toastify';
 
 const getWishList = () => {
     const storedWishlist = localStorage.getItem('wishlist');

@@ -20,7 +20,6 @@ const FoodCard = ({ food, isCart }) => {
         setIsFoodInWishlist(
             wishlist.some((item) => item && item._id === food._id)
         );
-        console.log(wishlist);
     }, [wishlist]);
 
     return (

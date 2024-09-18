@@ -1,8 +1,9 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import FoodCard from '../components/common/FoodCard';
 
 const Favorite = () => {
-    const foods = [{}, {}];
+    const { wishlist } = useSelector((state) => state.wishlist);
 
     return (
         <section className="food_section layout_padding">
@@ -13,16 +14,19 @@ const Favorite = () => {
 
                 <div className="filters-content">
                     <div className="row grid">
-                        {!foods ||
-                            (foods.length === 0 && (
+                        {!wishlist ||
+                            (wishlist.length === 0 && (
                                 <div className="col-sm-10 col-lg-10">
                                     <p className="text-center pt-4">
                                         Chưa có món nào bé ơi!!
                                     </p>
                                 </div>
                             ))}
-                        {foods.map((food) => (
-                            <FoodCard food={food} />
+                        {wishlist.map((food) => (
+                            <FoodCard
+                                key={food._id}
+                                food={food}
+                            />
                         ))}
                     </div>
                 </div>
