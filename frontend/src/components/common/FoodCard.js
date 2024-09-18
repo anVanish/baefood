@@ -3,24 +3,38 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import CartIcon from './CartIcon';
 import { addOrRemoveWishlist } from '../../slices/wishlistSlice';
+import { addToCart, deleteFromCart } from '../../slices/cartSlice';
 
 const FoodCard = ({ food, isCart }) => {
     const dispatch = useDispatch();
     const { wishlist } = useSelector((state) => state.wishlist);
 
+    //check food in wishlist
     const [isFoodInWishlist, setIsFoodInWishlist] = useState(
         wishlist.some((item) => item && item._id === food._id)
     );
 
+    //add to wish list
     const handleAddToWishlist = (food) => {
         dispatch(addOrRemoveWishlist(food));
     };
 
+    //check wishlist when wishlist change
     useEffect(() => {
         setIsFoodInWishlist(
             wishlist.some((item) => item && item._id === food._id)
         );
-    }, [wishlist]);
+    }, [wishlist, food._id]);
+
+    //add to cart
+    const handleAddToCart = (foodId) => {
+        dispatch(addToCart({ foodId }));
+    };
+
+    //delete from cart
+    const handleDeleteFromCart = (foodId) => {
+        dispatch(deleteFromCart({ foodId }));
+    };
 
     return (
         <div className="col-sm-6 col-lg-4">
@@ -56,7 +70,9 @@ const FoodCard = ({ food, isCart }) => {
                                 </Link>
                                 {isCart ? (
                                     <Link
-                                        to=""
+                                        onClick={() =>
+                                            handleDeleteFromCart(food._id)
+                                        }
                                         className="bg-danger"
                                     >
                                         <i
@@ -65,7 +81,11 @@ const FoodCard = ({ food, isCart }) => {
                                         ></i>
                                     </Link>
                                 ) : (
-                                    <Link to="">
+                                    <Link
+                                        onClick={() =>
+                                            handleAddToCart(food._id)
+                                        }
+                                    >
                                         <CartIcon />
                                     </Link>
                                 )}

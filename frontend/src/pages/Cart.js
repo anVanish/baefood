@@ -22,10 +22,6 @@ const Cart = () => {
         }
     }, [dispatch]);
 
-    useEffect(() => {
-        console.log(carts);
-    }, [carts]);
-
     return (
         <>
             {!user ? (

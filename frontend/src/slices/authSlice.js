@@ -15,7 +15,7 @@ export const login = createAsyncThunk(
 
             if (data.success) {
                 toast.success('Đăng nhập thành công');
-                return data;
+                return data.data;
             } else {
                 return rejectWithValue(data.message);
             }
@@ -51,8 +51,8 @@ const authSlice = createSlice({
             .addCase(login.fulfilled, (state, action) => {
                 state.loading = false;
                 state.error = null;
-                state.user = action.payload.data.user;
-                state.token = action.payload.data.token;
+                state.user = action.payload.user;
+                state.token = action.payload.token;
 
                 localStorage.setItem(
                     'user',

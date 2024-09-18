@@ -7,13 +7,14 @@ export const getCategories = createAsyncThunk(
     'categories/list',
     async (_, { rejectWithValue }) => {
         try {
-            const response = await axios.get('api/v1/categories', {
-                ...getAuthorizationHeader(),
-            });
+            const response = await axios.get(
+                'api/v1/categories',
+                getAuthorizationHeader()
+            );
             const data = response.data;
 
             if (data.success) {
-                return data;
+                return data.data;
             } else {
                 return rejectWithValue(data.message);
             }
@@ -42,7 +43,7 @@ const categorySlices = createSlice({
             .addCase(getCategories.fulfilled, (state, action) => {
                 state.loading = false;
                 state.error = null;
-                state.categories = action.payload.data.categories;
+                state.categories = action.payload.categories;
             })
             .addCase(getCategories.rejected, (state, action) => {
                 state.loading = false;

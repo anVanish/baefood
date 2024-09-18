@@ -11,13 +11,13 @@ export const getFoods = createAsyncThunk(
                 `api/v1/foods?categoryId=${
                     categoryId || ''
                 }&page=${page}&limit=${limit}`,
-                { ...getAuthorizationHeader() }
+                getAuthorizationHeader()
             );
 
             const data = response.data;
 
             if (data.success) {
-                return data;
+                return data.data;
             } else {
                 return rejectWithValue(data.message);
             }
@@ -46,7 +46,7 @@ const foodSlices = createSlice({
                 state.error = null;
             })
             .addCase(getFoods.fulfilled, (state, action) => {
-                const { foods, total, page } = action.payload.data;
+                const { foods, total, page } = action.payload;
                 state.loading = false;
                 state.foods = foods;
                 state.total = total;
