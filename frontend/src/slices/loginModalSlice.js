@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 export const loginModalSlice = createSlice({
     name: 'loginModal',
-    initialState: { isOpen: false },
+    initialState: { isOpen: false, isAdmin: false },
     reducers: {
         openModal: (state, action) => {
             state.isOpen = true;

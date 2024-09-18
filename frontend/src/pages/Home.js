@@ -10,6 +10,7 @@ import { getCategories } from '../slices/categorySlice';
 const Home = () => {
     const dispatch = useDispatch();
     const [user, setUser] = useState(null);
+
     const {
         foods,
         page,
@@ -18,11 +19,11 @@ const Home = () => {
         error: foodError,
     } = useSelector((state) => state.food);
     const { categories } = useSelector((state) => state.category);
-    const [activeCategory, setActiveCategory] = useState('');
 
+    const [activeCategory, setActiveCategory] = useState('');
     const [displayedFoods, setDisplayedFoods] = useState([]);
 
-    //init data
+    // Initial data load
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
@@ -37,17 +38,17 @@ const Home = () => {
 
     //update displayed foods
     useEffect(() => {
-        setDisplayedFoods([...displayedFoods, ...foods]);
-    }, [foods, dispatch]);
+        setDisplayedFoods((prevFoods) => [...prevFoods, ...foods]);
+    }, [foods]);
 
-    //filter foods by category
+    // Filter foods by category
     const filterByCategory = (categoryId) => {
-        setDisplayedFoods([]);
+        setDisplayedFoods([]); // Reset displayed foods when category changes
         setActiveCategory(categoryId);
-        dispatch(getFoods({ categoryId, page: 0 })); //dispatch to get foods by category id
+        dispatch(getFoods({ categoryId, page: 0 }));
     };
 
-    //view more button
+    // View more button handler
     const viewMore = () => {
         dispatch(getFoods({ page: page + 1, categoryId: activeCategory }));
     };
