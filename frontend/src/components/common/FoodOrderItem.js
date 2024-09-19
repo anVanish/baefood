@@ -1,10 +1,6 @@
 import React from 'react';
 
 const FoodOrderItem = ({ food }) => {
-    food.name = 'Banh Canh';
-    food.chef = 'Khanh An';
-    food.imageLink = 'link';
-
     return (
         <div className="d-flex flex-row align-items-center my-3">
             <div className="mx-3">

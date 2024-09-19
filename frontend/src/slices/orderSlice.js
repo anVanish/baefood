@@ -2,15 +2,14 @@ import axios from 'axios';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import { getAuthorizationHeader } from '../utils/AuthorizationHeader';
-
-const url = 'api/v1/orders';
+import { orderUrl } from '../constants/urlConstants';
 
 export const getServeTime = createAsyncThunk(
     'order/getServeTime',
     async ({ day = 0 }, { rejectWithValue }) => {
         try {
             const response = await axios.get(
-                `${url}/serveTime?day=${day}`,
+                `${orderUrl}/serveTime?day=${day}`,
                 getAuthorizationHeader()
             );
 
@@ -34,10 +33,34 @@ export const addOrder = createAsyncThunk(
     async ({ serveTime, serveDate }, { rejectWithValue }) => {
         try {
             const response = await axios.post(
-                `${url}`,
+                `${orderUrl}`,
                 { serveTime, serveDate },
                 getAuthorizationHeader()
             );
+            const data = response.data;
+            if (data.success) {
+                return data.data;
+            } else {
+                return rejectWithValue(data.message);
+            }
+        } catch (error) {
+            if (!error.response) {
+                throw error;
+            }
+            return rejectWithValue(error.response.data.message);
+        }
+    }
+);
+
+export const getOrders = createAsyncThunk(
+    'order/list',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await axios.get(
+                `${orderUrl}`,
+                getAuthorizationHeader()
+            );
+
             const data = response.data;
             if (data.success) {
                 return data.data;
@@ -62,6 +85,8 @@ const orderSlice = createSlice({
         availableTimes: null,
         addOrderLoading: false,
         addOrderError: null,
+        getOrdersLoading: false,
+        getOrdersError: null,
     },
     extraReducers: (builder) => {
         builder
@@ -94,6 +119,22 @@ const orderSlice = createSlice({
             .addCase(addOrder.rejected, (state, action) => {
                 state.addOrderLoading = false;
                 state.addOrderError = action.payload;
+                toast.error(action.payload);
+            })
+
+            //get orders list
+            .addCase(getOrders.pending, (state) => {
+                state.getOrdersLoading = true;
+                state.getOrdersError = null;
+            })
+            .addCase(getOrders.fulfilled, (state, action) => {
+                state.getOrdersLoading = false;
+                state.getOrdersError = null;
+                state.orders = action.payload.orders;
+            })
+            .addCase(getOrders.rejected, (state, action) => {
+                state.getOrdersLoading = false;
+                state.getOrdersError = action.payload;
                 toast.error(action.payload);
             });
     },

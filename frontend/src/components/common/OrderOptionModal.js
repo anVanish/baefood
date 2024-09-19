@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Modal from 'react-modal';
 import { getServeTime } from '../../slices/orderSlice';
+import { formatServeTimeToVN } from '../../utils/ServeDateFormat';
 
 const customStyles = {
     content: {
@@ -25,13 +26,6 @@ const OrderModal = ({ show, handleClose, handleSubmit }) => {
     const { availableTimes } = useSelector((state) => state.order);
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedTime, setSelectedTime] = useState('');
-
-    //translate to Vietnamese to display on page
-    const timeToVN = {
-        breakfast: 'Buổi sáng',
-        lunch: 'Buổi trưa',
-        dinner: 'Buổi tối',
-    };
 
     //trigger when day changes
     useEffect(() => {
@@ -107,7 +101,7 @@ const OrderModal = ({ show, handleClose, handleSubmit }) => {
                                             key={index}
                                             value={key}
                                         >
-                                            {timeToVN[key]}
+                                            {formatServeTimeToVN(key)}
                                         </option>
                                     )
                                 )

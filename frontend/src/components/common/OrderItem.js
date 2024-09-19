@@ -1,21 +1,20 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import FoodOrderItem from './FoodOrderItem';
+import {
+    formatServeDate,
+    formatServeTimeToVN,
+} from '../../utils/ServeDateFormat';
 
 const OrderItem = ({ order }) => {
-    order.serveTime = 'Buoi trua';
-    order.serveDate = '22/02/2022';
-    order.isDone = false;
-    order.foodId = [{}, {}];
-
     return (
         <div className="col-sm-6 col-lg-4">
             <div className="box">
                 <div>
-                    {/* <!-- order title --> */}
                     <div className="d-flex justify-content-between order-box">
                         <h5 className="text-dark">
-                            {order.serveTime}, {order.serveDate}
+                            {formatServeTimeToVN(order.serveTime)},{' '}
+                            {formatServeDate(order.serveDate)}
                         </h5>
                         {!order.isDone ? (
                             <Link
@@ -33,14 +32,9 @@ const OrderItem = ({ order }) => {
                             </Link>
                         )}
                     </div>
-                    {/* <!-- end order title --> */}
-                    {/* <!-- menu --> */}
-
-                    {order.foodId.map((food) => (
+                    {order.foodIds.map((food) => (
                         <FoodOrderItem food={food} />
                     ))}
-
-                    {/* <!-- end menu --> */}
                 </div>
             </div>
         </div>
