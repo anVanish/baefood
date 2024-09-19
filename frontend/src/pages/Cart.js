@@ -6,6 +6,7 @@ import { closeModal, openModal } from '../slices/loginModalSlice';
 import LoginModal from '../components/common/LoginModal';
 import { getCart } from '../slices/cartSlice';
 import OrderOptionModal from '../components/common/OrderOptionModal';
+import { addOrder } from '../slices/orderSlice';
 
 const Cart = () => {
     const dispatch = useDispatch();
@@ -13,6 +14,7 @@ const Cart = () => {
     const [user, setUser] = useState(null);
     const [isModalShow, setIsModalShow] = useState(false);
 
+    //check if user logged in
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
@@ -24,16 +26,26 @@ const Cart = () => {
         }
     }, [dispatch]);
 
+    //open order option modal
     const handleModalOpen = () => {
         setIsModalShow(true);
     };
 
+    //close order option modal
     const handleModalClose = () => {
         setIsModalShow(false);
     };
 
+    //submit order options
     const handleModalSubmit = ({ serveDate, serveTime }) => {
-        alert(`You choose ${serveTime} : ${serveDate}`);
+        dispatch(addOrder({ serveDate, serveTime }))
+            .unwrap()
+            .then(() => {
+                dispatch(getCart());
+            })
+            .catch((error) => {
+                console.error('Order submission failed:', error);
+            });
     };
 
     return (

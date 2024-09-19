@@ -24,7 +24,31 @@ export const getServeTime = createAsyncThunk(
             if (!error.response) {
                 throw error;
             }
-            rejectWithValue(error.response.data.message);
+            return rejectWithValue(error.response.data.message);
+        }
+    }
+);
+
+export const addOrder = createAsyncThunk(
+    'order/addOrder',
+    async ({ serveTime, serveDate }, { rejectWithValue }) => {
+        try {
+            const response = await axios.post(
+                `${url}`,
+                { serveTime, serveDate },
+                getAuthorizationHeader()
+            );
+            const data = response.data;
+            if (data.success) {
+                return data.data;
+            } else {
+                return rejectWithValue(data.message);
+            }
+        } catch (error) {
+            if (!error.response) {
+                throw error;
+            }
+            return rejectWithValue(error.response.data.message);
         }
     }
 );
@@ -36,9 +60,12 @@ const orderSlice = createSlice({
         serveTimeLoading: false,
         serveTimeError: null,
         availableTimes: null,
+        addOrderLoading: false,
+        addOrderError: null,
     },
     extraReducers: (builder) => {
         builder
+            //get serve time
             .addCase(getServeTime.pending, (state) => {
                 state.serveTimeLoading = true;
                 state.serveTimeError = null;
@@ -51,6 +78,22 @@ const orderSlice = createSlice({
             .addCase(getServeTime.rejected, (state, action) => {
                 state.serveTimeLoading = false;
                 state.serveTimeError = action.payload;
+                toast.error(action.payload);
+            })
+
+            //add new order
+            .addCase(addOrder.pending, (state) => {
+                state.addOrderLoading = true;
+                state.addOrderError = null;
+            })
+            .addCase(addOrder.fulfilled, (state, action) => {
+                state.addOrderLoading = false;
+                state.addOrderError = null;
+                toast.success('Lên món thành công', { autoClose: 1000 });
+            })
+            .addCase(addOrder.rejected, (state, action) => {
+                state.addOrderLoading = false;
+                state.addOrderError = action.payload;
                 toast.error(action.payload);
             });
     },
