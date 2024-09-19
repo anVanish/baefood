@@ -36,7 +36,7 @@ const Order = () => {
                         <section>
                             <div className="row grid">
                                 {orders.length === 0 && (
-                                    <div className="col-sm-10 col-lg-10">
+                                    <div className="col-sm-12 col-lg-12">
                                         <p className="text-center pt-4">
                                             Chưa có món nào bé ơi!!
                                         </p>

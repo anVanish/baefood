@@ -76,6 +76,30 @@ export const getOrders = createAsyncThunk(
     }
 );
 
+export const deleteOrder = createAsyncThunk(
+    'order/deleteOrder',
+    async ({ orderId }, { rejectWithValue }) => {
+        try {
+            const response = await axios.delete(
+                `${orderUrl}/${orderId}`,
+                getAuthorizationHeader()
+            );
+
+            const data = response.data;
+            if (data.success) {
+                return data.data;
+            } else {
+                return rejectWithValue(data.message);
+            }
+        } catch (error) {
+            if (!error.response) {
+                throw error;
+            }
+            return rejectWithValue(error.response.data.message);
+        }
+    }
+);
+
 const orderSlice = createSlice({
     name: 'order',
     initialState: {
@@ -87,6 +111,8 @@ const orderSlice = createSlice({
         addOrderError: null,
         getOrdersLoading: false,
         getOrdersError: null,
+        deleteOrderLoading: false,
+        deleteOrderError: null,
     },
     extraReducers: (builder) => {
         builder
@@ -135,6 +161,23 @@ const orderSlice = createSlice({
             .addCase(getOrders.rejected, (state, action) => {
                 state.getOrdersLoading = false;
                 state.getOrdersError = action.payload;
+                toast.error(action.payload);
+            })
+
+            //delete order
+            .addCase(deleteOrder.pending, (state) => {
+                state.deleteOrderLoading = true;
+                state.deleteOrderError = null;
+            })
+            .addCase(deleteOrder.fulfilled, (state, action) => {
+                state.deleteOrderLoading = false;
+                state.deleteOrderError = null;
+                state.orders = action.payload.orders;
+                toast.success('Xóa đơn món thành công', { autoClose: 1000 });
+            })
+            .addCase(deleteOrder.rejected, (state, action) => {
+                state.deleteOrderLoading = false;
+                state.deleteOrderError = action.payload;
                 toast.error(action.payload);
             });
     },

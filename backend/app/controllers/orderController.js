@@ -62,7 +62,12 @@ exports.getServeTime = async (req, res, next) => {
             serveDates.dinner = dinner;
         }
 
-        res.json(new ApiResponse().setData('serveDates', serveDates));
+        //remove null item
+        const filteredServeDates = Object.fromEntries(
+            Object.entries(serveDates).filter(([key, value]) => value !== null)
+        );
+
+        res.json(new ApiResponse().setData('serveDates', filteredServeDates));
     } catch (error) {
         next(error);
     }
@@ -100,7 +105,13 @@ exports.deleteMyOrder = async (req, res, next) => {
         const order = await Orders.findOneAndDelete({ _id: orderId });
         if (!order) throw new ApiError('Order not found', 404);
 
-        res.json(new ApiResponse().setSuccess('Order canceled'));
+        const orders = await listOrdersByUserId(req.user._id);
+
+        res.json(
+            new ApiResponse()
+                .setSuccess('Order canceled')
+                .setData('orders', orders)
+        );
     } catch (error) {
         next(error);
     }

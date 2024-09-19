@@ -1,12 +1,20 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import FoodOrderItem from './FoodOrderItem';
 import {
     formatServeDate,
     formatServeTimeToVN,
 } from '../../utils/ServeDateFormat';
+import { deleteOrder } from '../../slices/orderSlice';
 
 const OrderItem = ({ order }) => {
+    const dispatch = useDispatch();
+
+    const handleDeleteOrder = (orderId) => {
+        dispatch(deleteOrder({ orderId }));
+    };
+
     return (
         <div className="col-sm-6 col-lg-4">
             <div className="box">
@@ -18,7 +26,7 @@ const OrderItem = ({ order }) => {
                         </h5>
                         {!order.isDone ? (
                             <Link
-                                to=""
+                                onClick={() => handleDeleteOrder(order._id)}
                                 className="text-danger"
                             >
                                 <i className="fa fa-trash"></i>
