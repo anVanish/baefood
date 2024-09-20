@@ -22,7 +22,7 @@ const customStyles = {
 
 Modal.setAppElement('#root');
 
-const LoginModal = () => {
+const LoginModal = ({ onLoginSuccess }) => {
     const dispatch = useDispatch();
     const loginModal = useSelector((state) => state.loginModal);
     const auth = useSelector((state) => state.auth);
@@ -34,7 +34,15 @@ const LoginModal = () => {
 
     const handleLogin = (e) => {
         e.preventDefault();
-        dispatch(login({ email, password }));
+        dispatch(login({ email, password }))
+            .then((response) => {
+                if (response.meta.requestStatus === 'fulfilled') {
+                    onLoginSuccess ? onLoginSuccess() : dispatch(closeModal());
+                }
+            })
+            .catch((error) => {
+                console.error('Login failed:', error);
+            });
     };
 
     return (
@@ -46,7 +54,11 @@ const LoginModal = () => {
             shouldCloseOnEsc={false}
             contentLabel="Login Modal"
         >
-            <h2 className="mb-4">Phải Bé Iu hông đó?</h2>
+            <h2 className="mb-4">
+                {loginModal.isAdmin
+                    ? 'Chào cậu chủ! Nhanh vô nấu ăn kìa'
+                    : 'Phải Bé Iu hông đó?'}
+            </h2>
             <h2 className="mb-4">Đăng nhập nào</h2>
             <form>
                 <div>

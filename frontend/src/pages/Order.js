@@ -13,7 +13,7 @@ const Order = () => {
     //check if user logged in
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
-        if (storedUser) {
+        if (storedUser && !JSON.parse(storedUser).isAdmin) {
             setUser(JSON.parse(storedUser));
             dispatch(closeModal());
             dispatch(getOrders());

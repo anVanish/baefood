@@ -24,18 +24,31 @@ const Home = () => {
     const [displayedFoods, setDisplayedFoods] = useState([]);
 
     // Initial data load
+    const initData = () => {
+        setDisplayedFoods([]);
+        dispatch(getFoods({ categoryId: '', page: 0 }));
+        dispatch(getCategories());
+    };
+
     useEffect(() => {
+        //check if user logged in
         const storedUser = localStorage.getItem('user');
-        if (storedUser) {
+        if (storedUser && !JSON.parse(storedUser).isAdmin) {
             setUser(JSON.parse(storedUser));
-            setDisplayedFoods([]);
             dispatch(closeModal());
-            dispatch(getFoods({ categoryId: '', page: 0 }));
-            dispatch(getCategories());
+            initData();
         } else {
             dispatch(openModal({ isAdmin: false }));
         }
     }, [dispatch]);
+
+    //on login success
+    const onLoginSuccess = () => {
+        const storedUser = localStorage.getItem('user');
+        setUser(JSON.parse(storedUser));
+        dispatch(closeModal());
+        initData();
+    };
 
     //update displayed foods
     useEffect(() => {
@@ -61,7 +74,7 @@ const Home = () => {
     return (
         <div>
             {!user ? (
-                <LoginModal />
+                <LoginModal onLoginSuccess={onLoginSuccess} />
             ) : (
                 <section className="food_section layout_padding">
                     <div className="container">

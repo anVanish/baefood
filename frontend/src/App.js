@@ -15,6 +15,7 @@ import NotFound from './pages/NotFound';
 import Favorite from './pages/Favorite';
 import Order from './pages/Order';
 import Cart from './pages/Cart';
+import AdminFood from './pages/admin/AdminFood';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { toast, ToastContainer } from 'react-toastify';
@@ -61,6 +62,12 @@ function App() {
                             exact
                             path="/orders"
                             element={<Order />}
+                        />
+                        {/* admin */}
+                        <Route
+                            exact
+                            path="/admin"
+                            element={<AdminFood />}
                         />
                         <Route
                             path="*"

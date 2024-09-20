@@ -2,8 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import heroBackground from '../../assets/images/hero-bg.jpg';
 import CartIcon from './CartIcon';
+import { useSelector } from 'react-redux';
 
 const Header = () => {
+    const { user } = useSelector((state) => state.auth);
+
     return (
         <div className="hero_area">
             <div className="bg-box">
@@ -14,44 +17,73 @@ const Header = () => {
             </div>
             <header className="header_section">
                 <div className="container">
-                    <nav className="navbar navbar-expand-lg custom_nav-container justify-content-between">
-                        <Link
-                            className="navbar-brand"
-                            to="/"
-                        >
-                            <span>Bếp Iu</span>
-                        </Link>
+                    {user && user.isAdmin ? (
+                        <nav className="navbar navbar-expand-lg custom_nav-container justify-content-between">
+                            <Link
+                                className="navbar-brand"
+                                to="/admin"
+                            >
+                                <span>Bếp Iu</span>
+                            </Link>
 
-                        {/* <!-- option  --> */}
-                        <div
-                            className=""
-                            id=""
-                        >
-                            <div className="user_option">
-                                <Link
-                                    to="/favorites"
-                                    className="user_link"
-                                >
-                                    <i
-                                        className="fa fa-heart"
-                                        aria-hidden="true"
-                                    ></i>
-                                </Link>
-                                <Link
-                                    className="cart_link"
-                                    to="/carts"
-                                >
-                                    <CartIcon />
-                                </Link>
-                                <Link
-                                    to="/orders"
-                                    className="order_online"
-                                >
-                                    Lên món
-                                </Link>
+                            {/* <!-- option  --> */}
+                            <div
+                                className=""
+                                id=""
+                            >
+                                <div className="user_option">
+                                    <Link className="user_link">
+                                        Xin chào admin, {user.name}
+                                    </Link>
+                                    <Link
+                                        to="/admin/orders"
+                                        className="order_online"
+                                    >
+                                        Quản lý món
+                                    </Link>
+                                </div>
                             </div>
-                        </div>
-                    </nav>
+                        </nav>
+                    ) : (
+                        <nav className="navbar navbar-expand-lg custom_nav-container justify-content-between">
+                            <Link
+                                className="navbar-brand"
+                                to="/"
+                            >
+                                <span>Bếp Iu</span>
+                            </Link>
+
+                            {/* <!-- option  --> */}
+                            <div
+                                className=""
+                                id=""
+                            >
+                                <div className="user_option">
+                                    <Link
+                                        to="/favorites"
+                                        className="user_link"
+                                    >
+                                        <i
+                                            className="fa fa-heart"
+                                            aria-hidden="true"
+                                        ></i>
+                                    </Link>
+                                    <Link
+                                        className="cart_link"
+                                        to="/carts"
+                                    >
+                                        <CartIcon />
+                                    </Link>
+                                    <Link
+                                        to="/orders"
+                                        className="order_online"
+                                    >
+                                        Lên món
+                                    </Link>
+                                </div>
+                            </div>
+                        </nav>
+                    )}
                 </div>
             </header>
         </div>
