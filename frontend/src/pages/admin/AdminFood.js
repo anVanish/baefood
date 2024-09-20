@@ -64,8 +64,18 @@ const AdminFood = () => {
     };
 
     const handleConfirmDeleteModal = () => {
-        alert(`Success ${selectedFood._id}`);
-        setIsDeleteModalShow(false);
+        dispatch(deleteFood({ foodId: selectedFood._id }))
+            .then((response) => {
+                if (response.meta.requestStatus === 'fulfilled') {
+                    setIsDeleteModalShow(false);
+                    dispatch(
+                        getFoods({ categoryId: selectedCategory, limit: 100 })
+                    );
+                }
+            })
+            .catch((error) => {
+                console.error('Login failed:', error);
+            });
     };
     //#endregion
 

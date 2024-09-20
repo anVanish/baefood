@@ -18,17 +18,25 @@ const EditFoodModal = ({
     const [imageLink, setImageLink] = useState(
         isAddFood ? '' : food && food.imageLink
     );
-    const [categoryId, setCategoryId] = useState(
-        (food && food.categoryId && food.categoryId._id) || ''
-    );
+    const initCategoryId = () => {
+        if (isAddFood) {
+            return categories && categories.length > 0 ? categories[0]._id : '';
+        }
+        return (food && food.categoryId && food.categoryId._id) || '';
+    };
+    const [categoryId, setCategoryId] = useState(() => initCategoryId());
 
     useEffect(() => {
-        setName(isAddFood ? '' : food && food.name);
-        setChef(isAddFood ? '' : food && food.chef);
-        setDescription(isAddFood ? '' : food && food.description);
-        setImageLink(isAddFood ? '' : food && food.imageLink);
-        setCategoryId((food && food.categoryId && food.categoryId._id) || '');
-    }, [food]);
+        if (!isAddFood && food) {
+            setName(food.name);
+            setDescription(food.description);
+            setChef(food.chef);
+            setImageLink(food.imageLink);
+            setCategoryId(food.categoryId ? food.categoryId._id : '');
+        } else if (isAddFood && categories.length > 0) {
+            setCategoryId(categories[0]._id);
+        }
+    }, [food, categories, isAddFood]);
 
     const handleCancelButton = (e) => {
         e.preventDefault();

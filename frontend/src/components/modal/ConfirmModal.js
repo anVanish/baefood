@@ -37,7 +37,10 @@ const ConfirmModal = ({
                                 ? 'btn btn-danger btn-round mt-4'
                                 : 'btn btn-root btn-round mt-4'
                         }
-                        onClick={handleConfirmModal}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            handleConfirmModal();
+                        }}
                     >
                         Xác nhận
                     </button>
