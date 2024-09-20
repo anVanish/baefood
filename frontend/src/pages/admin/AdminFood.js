@@ -3,7 +3,12 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeModal, openModal } from '../../slices/loginModalSlice';
 import LoginModal from '../../components/modal/LoginModal';
-import { getFoods, updateFood, deleteFood } from '../../slices/foodSlice';
+import {
+    getFoods,
+    updateFood,
+    deleteFood,
+    addFood,
+} from '../../slices/foodSlice';
 import { getCategories } from '../../slices/categorySlice';
 import { formatServeDate } from '../../utils/ServeDateFormat';
 import ConfirmModal from '../../components/modal/ConfirmModal';
@@ -47,7 +52,7 @@ const AdminFood = () => {
         initData();
     };
 
-    //handle delete food modal action------------
+    // #region handle delete food modal action------------
     const handleOpenDeleteModal = (food) => {
         setIsDeleteModalShow(true);
         setSelectedFood(food);
@@ -62,9 +67,9 @@ const AdminFood = () => {
         alert(`Success ${selectedFood._id}`);
         setIsDeleteModalShow(false);
     };
-    //end handle delete food modal action------------
+    //#endregion
 
-    //handle add food modal action------------
+    // #region handle add food modal action------------
     const handleOpenAddModal = (food) => {
         setIsAddModalShow(true);
         setSelectedFood(food);
@@ -75,13 +80,30 @@ const AdminFood = () => {
         setSelectedFood(null);
     };
 
-    const handleConfirmAddModal = () => {
-        alert(`Success ${selectedFood._id}`);
-        setIsAddModalShow(false);
+    const handleConfirmAddModal = (
+        name,
+        categoryId,
+        description,
+        chef,
+        imageLink
+    ) => {
+        const food = { name, categoryId, description, chef, imageLink };
+        dispatch(addFood({ food }))
+            .then((response) => {
+                if (response.meta.requestStatus === 'fulfilled') {
+                    setIsAddModalShow(false);
+                    dispatch(
+                        getFoods({ categoryId: selectedCategory, limit: 100 })
+                    );
+                }
+            })
+            .catch((error) => {
+                console.error('Login failed:', error);
+            });
     };
-    //end handle add food modal action------------
+    //#endregion
 
-    //handle edit food modal action------------
+    // #region handle edit food modal action------------
     const handleOpenEditModal = (food) => {
         setIsEditModalShow(true);
         setSelectedFood(food);
@@ -92,10 +114,17 @@ const AdminFood = () => {
         setSelectedFood(null);
     };
 
-    const handleConfirmEditModal = (name, description, chef, imageLink) => {
+    const handleConfirmEditModal = (
+        name,
+        categoryId,
+        description,
+        chef,
+        imageLink
+    ) => {
         const food = {
             _id: selectedFood._id,
             name,
+            categoryId,
             description,
             chef,
             imageLink,
@@ -104,17 +133,18 @@ const AdminFood = () => {
             .then((response) => {
                 if (response.meta.requestStatus === 'fulfilled') {
                     setIsEditModalShow(false);
-                    dispatch(getFoods({ categoryId: '', limit: 100 }));
-                    dispatch(getCategories());
+                    dispatch(
+                        getFoods({ categoryId: selectedCategory, limit: 100 })
+                    );
                 }
             })
             .catch((error) => {
-                console.error('Login failed:', error);
+                console.error('Update failed:', error);
             });
     };
-    //end handle edit food modal action------------
+    //#endregion
 
-    //change category
+    // #region change category
     const handleChangeCategory = (e) => {
         setSelectedCategory(e.target.value);
         console.log(selectedCategory);
@@ -126,6 +156,7 @@ const AdminFood = () => {
             dispatch(getFoods({ categoryId: selectedCategory, limit: 100 }));
         else dispatch(getFoods({ categoryId: '', limit: 100 }));
     }, [selectedCategory]);
+    //#endregion
 
     return (
         <div>
@@ -262,12 +293,14 @@ const AdminFood = () => {
                 handleCloseModal={handleCloseEditModal}
                 handleConfirmModal={handleConfirmEditModal}
                 food={selectedFood}
+                categories={categories}
             />
             <EditFoodModal
                 show={isAddModalShow}
                 handleCloseModal={handleCloseAddModal}
                 handleConfirmModal={handleConfirmAddModal}
                 isAddFood={true}
+                categories={categories}
             />
         </div>
     );

@@ -3,7 +3,6 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import { getAuthorizationHeader } from '../utils/AuthorizationHeader';
 import { foodUrl } from '../constants/urlConstants';
-import authSlice from './authSlice';
 
 export const getFoods = createAsyncThunk(
     'foods/list',
@@ -82,6 +81,31 @@ export const deleteFood = createAsyncThunk(
     }
 );
 
+export const addFood = createAsyncThunk(
+    'foods/addFood',
+    async ({ food }, { rejectWithValue }) => {
+        try {
+            const response = await axios.post(
+                `${foodUrl}`,
+                food,
+                getAuthorizationHeader()
+            );
+
+            const data = response.data;
+            if (data.success) {
+                return data.data;
+            } else {
+                return rejectWithValue(data.message);
+            }
+        } catch (error) {
+            if (!error.response) {
+                throw error;
+            }
+            return rejectWithValue(error.response.data.message);
+        }
+    }
+);
+
 const foodSlices = createSlice({
     name: 'food',
     initialState: {
@@ -94,6 +118,8 @@ const foodSlices = createSlice({
         updateError: null,
         deleteLoading: false,
         deleteError: null,
+        addLoading: false,
+        addError: null,
     },
     extraReducers: (builder) => {
         builder
@@ -146,6 +172,22 @@ const foodSlices = createSlice({
             .addCase(deleteFood.rejected, (state, action) => {
                 state.deleteLoading = false;
                 state.deleteError = action.payload;
+                toast.error(action.payload);
+            })
+
+            //add food
+            .addCase(addFood.pending, (state) => {
+                state.addLoading = true;
+                state.addError = null;
+            })
+            .addCase(addFood.fulfilled, (state, action) => {
+                state.addLoading = false;
+                state.addError = null;
+                toast.success('Thêm món ăn thành công', { autoClose: 1000 });
+            })
+            .addCase(addFood.rejected, (state, action) => {
+                state.addLoading = false;
+                state.addError = action.payload;
                 toast.error(action.payload);
             });
     },

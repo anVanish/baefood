@@ -7,6 +7,7 @@ const EditFoodModal = ({
     handleConfirmModal,
     handleCloseModal,
     food,
+    categories,
     isAddFood = false,
 }) => {
     const [name, setName] = useState(isAddFood ? '' : food && food.name);
@@ -17,12 +18,16 @@ const EditFoodModal = ({
     const [imageLink, setImageLink] = useState(
         isAddFood ? '' : food && food.imageLink
     );
+    const [categoryId, setCategoryId] = useState(
+        (food && food.categoryId && food.categoryId._id) || ''
+    );
 
     useEffect(() => {
         setName(isAddFood ? '' : food && food.name);
         setChef(isAddFood ? '' : food && food.chef);
         setDescription(isAddFood ? '' : food && food.description);
         setImageLink(isAddFood ? '' : food && food.imageLink);
+        setCategoryId((food && food.categoryId && food.categoryId._id) || '');
     }, [food]);
 
     const handleCancelButton = (e) => {
@@ -32,7 +37,11 @@ const EditFoodModal = ({
 
     const handleConfirmButton = (e) => {
         e.preventDefault();
-        handleConfirmModal(name, description, chef, imageLink);
+        handleConfirmModal(name, categoryId, description, chef, imageLink);
+    };
+
+    const handleChangeCategory = (e) => {
+        setCategoryId(e.target.value);
     };
 
     return (
@@ -56,6 +65,24 @@ const EditFoodModal = ({
                         value={name || ''}
                         onChange={(e) => setName(e.target.value)}
                     />
+                    <label htmlFor="categoryId">Danh mục</label>
+                    <select
+                        id="categoryId"
+                        name="categoryId"
+                        value={categoryId}
+                        onChange={(e) => handleChangeCategory(e)}
+                    >
+                        {categories &&
+                            categories.length > 0 &&
+                            categories.map((cate) => (
+                                <option
+                                    key={cate._id}
+                                    value={cate._id}
+                                >
+                                    {cate.name}
+                                </option>
+                            ))}
+                    </select>
                     <label htmlFor="chef">Đầu bếp</label>
                     <input
                         id="chef"
