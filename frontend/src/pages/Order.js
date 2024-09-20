@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import OrderItem from '../components/common/OrderItem';
 import { getOrders } from '../slices/orderSlice';
 import { closeModal, openModal } from '../slices/loginModalSlice';
-import LoginModal from '../components/common/LoginModal';
+import LoginModal from '../components/modal/LoginModal';
 
 const Order = () => {
     const dispatch = useDispatch();

@@ -14,7 +14,8 @@ exports.listFood = async (req, res, next) => {
 
         const foods = await Foods.find(filter)
             .skip(page * limit)
-            .limit(limit);
+            .limit(limit)
+            .populate('categoryId', 'name');
 
         const total = await Foods.countDocuments(filter);
 

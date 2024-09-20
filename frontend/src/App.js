@@ -19,7 +19,7 @@ import AdminFood from './pages/admin/AdminFood';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { toast, ToastContainer } from 'react-toastify';
-import LoginModal from './components/common/LoginModal';
+import LoginModal from './components/modal/LoginModal';
 import { useEffect } from 'react';
 import { clearToast } from './slices/toastSlice';
 

@@ -1048,3 +1048,11 @@ select {
     color: #333;
     margin-bottom: 1rem;
 }
+
+.food-management-img {
+    width: 75px;
+}
+
+.food-management-btn {
+    font-size: 1.5rem !important;
+}

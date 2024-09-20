@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import FoodCard from '../components/common/FoodCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeModal, openModal } from '../slices/loginModalSlice';
-import LoginModal from '../components/common/LoginModal';
+import LoginModal from '../components/modal/LoginModal';
 import { getFoods } from '../slices/foodSlice';
 import { getCategories } from '../slices/categorySlice';
 

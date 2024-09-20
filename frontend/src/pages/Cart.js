@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import FoodCard from '../components/common/FoodCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeModal, openModal } from '../slices/loginModalSlice';
-import LoginModal from '../components/common/LoginModal';
+import LoginModal from '../components/modal/LoginModal';
 import { getCart } from '../slices/cartSlice';
-import OrderOptionModal from '../components/common/OrderOptionModal';
+import OrderOptionModal from '../components/modal/OrderOptionModal';
 import { addOrder } from '../slices/orderSlice';
 
 const Cart = () => {
