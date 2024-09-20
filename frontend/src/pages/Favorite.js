@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import FoodCard from '../components/common/FoodCard';
 import { closeModal, openModal } from '../slices/loginModalSlice';
+import LoginModal from '../components/modal/LoginModal';
 
 const Favorite = () => {
     const dispatch = useDispatch();

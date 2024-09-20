@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeModal, openModal } from '../../slices/loginModalSlice';
@@ -29,10 +29,10 @@ const AdminFood = () => {
     const { categories } = useSelector((state) => state.category);
 
     //initial data load
-    const initData = () => {
+    const initData = useCallback(() => {
         dispatch(getFoods({ categoryId: '', limit: 100 }));
         dispatch(getCategories());
-    };
+    }, [dispatch]);
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
         if (storedUser && JSON.parse(storedUser).isAdmin) {
@@ -42,7 +42,7 @@ const AdminFood = () => {
         } else {
             dispatch(openModal({ isAdmin: true }));
         }
-    }, [dispatch]);
+    }, [dispatch, initData]);
 
     //on login success
     const onLoginSuccess = () => {
@@ -74,7 +74,7 @@ const AdminFood = () => {
                 }
             })
             .catch((error) => {
-                console.error('Login failed:', error);
+                console.error('Deleted failed:', error);
             });
     };
     //#endregion
@@ -108,7 +108,7 @@ const AdminFood = () => {
                 }
             })
             .catch((error) => {
-                console.error('Login failed:', error);
+                console.error('Added failed:', error);
             });
     };
     //#endregion
@@ -149,23 +149,30 @@ const AdminFood = () => {
                 }
             })
             .catch((error) => {
-                console.error('Update failed:', error);
+                console.error('Updated failed:', error);
             });
     };
     //#endregion
 
     // #region change category
-    const handleChangeCategory = (e) => {
-        setSelectedCategory(e.target.value);
-        console.log(selectedCategory);
-    };
+    // const handleChangeCategory = (e) => {
+    //     setSelectedCategory(e.target.value);
+    // };
+    const handleChangeCategory = useCallback(
+        (e) => {
+            const newCategory = e.target.value;
+            setSelectedCategory(newCategory);
+            dispatch(getFoods({ categoryId: newCategory, limit: 100 }));
+        },
+        [dispatch]
+    );
 
     //update foods when category changes
     useEffect(() => {
         if (selectedCategory)
             dispatch(getFoods({ categoryId: selectedCategory, limit: 100 }));
         else dispatch(getFoods({ categoryId: '', limit: 100 }));
-    }, [selectedCategory]);
+    }, [selectedCategory, dispatch]);
     //#endregion
 
     return (
