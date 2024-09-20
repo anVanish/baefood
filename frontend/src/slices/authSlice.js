@@ -14,7 +14,7 @@ export const login = createAsyncThunk(
             const data = response.data;
 
             if (data.success) {
-                toast.success('Đăng nhập thành công');
+                toast.success('Đăng nhập thành công', { autoClose: 1000 });
                 return data.data;
             } else {
                 return rejectWithValue(data.message);

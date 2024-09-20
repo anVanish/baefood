@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import heroBackground from '../../assets/images/hero-bg.jpg';
 import CartIcon from './CartIcon';
 
 const Header = () => {
-    const user = JSON.parse(localStorage.getItem('user'));
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
+
+    useEffect(() => {
+        setUser(JSON.parse(localStorage.getItem('user')));
+    }, [user]);
 
     return (
         <div className="hero_area">
