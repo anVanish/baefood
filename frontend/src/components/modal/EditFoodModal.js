@@ -62,7 +62,7 @@ const EditFoodModal = ({
             <h2 className="mb-4">
                 {isAddFood ? 'Thêm món ăn' : 'Cập nhật tên món'}
             </h2>
-            <form>
+            <form autocomplete="off">
                 <div>
                     <label htmlFor="name">Tên món</label>
                     <input
