@@ -24,7 +24,7 @@ const ConfirmModal = ({
                         <p>{content}</p>
                     </div>
                 </div>
-                <div className="d-flex">
+                <div className="d-flex justify-content-between">
                     <button
                         className="btn btn-secondary btn-round mt-4 mr-4"
                         onClick={handleCloseModal}

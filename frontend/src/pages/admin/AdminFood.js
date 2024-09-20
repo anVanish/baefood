@@ -8,11 +8,14 @@ import { getFoods } from '../../slices/foodSlice';
 import { getCategories } from '../../slices/categorySlice';
 import { formatServeDate } from '../../utils/ServeDateFormat';
 import ConfirmModal from '../../components/modal/ConfirmModal';
+import EditFoodModal from '../../components/modal/EditFoodModal';
+import { defaultStyles } from 'react-modal';
 
 const AdminFood = () => {
     const dispatch = useDispatch();
     const [user, setUser] = useState(null);
-    const [isModalShow, setIsModalShow] = useState(false);
+    const [isDeleteModalShow, setIsDeleteModalShow] = useState(false);
+    const [isEditModalShow, setIsEditModalShow] = useState(false);
     const [selectedFood, setSelectedFood] = useState(null);
 
     //get foods
@@ -28,7 +31,7 @@ const AdminFood = () => {
 
     //initial data load
     const initData = () => {
-        dispatch(getFoods({ categoryId: '', page: 0 }));
+        dispatch(getFoods({ categoryId: '', limit: 100 }));
         dispatch(getCategories());
     };
     useEffect(() => {
@@ -50,21 +53,39 @@ const AdminFood = () => {
         initData();
     };
 
-    //handle delete food modal action
-    const handleOpenDeleteModal = (foodId) => {
-        setIsModalShow(true);
-        setSelectedFood(foodId);
+    //handle delete food modal action------------
+    const handleOpenDeleteModal = (food) => {
+        setIsDeleteModalShow(true);
+        setSelectedFood(food);
     };
 
     const handleCloseDeleteModal = () => {
-        setIsModalShow(false);
+        setIsDeleteModalShow(false);
         setSelectedFood(null);
     };
 
     const handleConfirmDeleteModal = () => {
-        alert(`Success ${selectedFood}`);
-        setIsModalShow(false);
+        alert(`Success ${selectedFood._id}`);
+        setIsDeleteModalShow(false);
     };
+    //end handle delete food modal action------------
+
+    //handle edit food modal action------------
+    const handleOpenEditModal = (food) => {
+        setIsEditModalShow(true);
+        setSelectedFood(food);
+    };
+
+    const handleCloseEditModal = () => {
+        setIsEditModalShow(false);
+        setSelectedFood(null);
+    };
+
+    const handleConfirmEditModal = (name, description, chef) => {
+        alert(`Success ${selectedFood._id}: ${name}, ${description}, ${chef}`);
+        setIsEditModalShow(false);
+    };
+    //end handle edit food modal action------------
 
     return (
         <div>
@@ -73,8 +94,8 @@ const AdminFood = () => {
             ) : (
                 <section className="food_section layout_padding">
                     <div className="container">
-                        <div className="heading_container heading_center">
-                            <h2>Menu Bếp Iu</h2>
+                        <div className="heading_container heading_center mb-4">
+                            <h2>Danh sách món của Bếp Iu</h2>
                         </div>
                         <table class="table">
                             <thead>
@@ -107,7 +128,12 @@ const AdminFood = () => {
                                         </td>
                                         <td>
                                             {/* edit button */}
-                                            <Link className="user_link">
+                                            <Link
+                                                onClick={() =>
+                                                    handleOpenEditModal(food)
+                                                }
+                                                className="user_link"
+                                            >
                                                 <i
                                                     className="fa fa-edit text-success food-management-btn mr-3"
                                                     aria-hidden="true"
@@ -116,9 +142,7 @@ const AdminFood = () => {
                                             {/* delete button */}
                                             <Link
                                                 onClick={() =>
-                                                    handleOpenDeleteModal(
-                                                        food._id
-                                                    )
+                                                    handleOpenDeleteModal(food)
                                                 }
                                                 className="user_link"
                                             >
@@ -138,10 +162,16 @@ const AdminFood = () => {
             <ConfirmModal
                 title={'Xóa món ăn!'}
                 content={'Bạn có chắc chắn xóa?'}
-                show={isModalShow}
+                show={isDeleteModalShow}
                 handleCloseModal={handleCloseDeleteModal}
                 handleConfirmModal={handleConfirmDeleteModal}
                 danger={true}
+            />
+            <EditFoodModal
+                show={isEditModalShow}
+                handleCloseModal={handleCloseEditModal}
+                handleConfirmModal={handleConfirmEditModal}
+                food={selectedFood}
             />
         </div>
     );
