@@ -2,10 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import heroBackground from '../../assets/images/hero-bg.jpg';
 import CartIcon from './CartIcon';
-import { useSelector } from 'react-redux';
 
 const Header = () => {
-    const { user } = useSelector((state) => state.auth);
+    const user = JSON.parse(localStorage.getItem('user'));
 
     return (
         <div className="hero_area">
