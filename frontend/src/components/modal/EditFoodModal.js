@@ -7,18 +7,33 @@ const EditFoodModal = ({
     handleConfirmModal,
     handleCloseModal,
     food,
+    isAddFood = false,
 }) => {
-    const [name, setName] = useState(food && food.name);
-    const [description, setDescription] = useState(food && food.description);
-    const [chef, setChef] = useState(food && food.chef);
-    const [imageLink, setImageLink] = useState(food && food.imageLink);
+    const [name, setName] = useState(isAddFood ? '' : food && food.name);
+    const [description, setDescription] = useState(
+        isAddFood ? '' : food && food.description
+    );
+    const [chef, setChef] = useState(isAddFood ? '' : food && food.chef);
+    const [imageLink, setImageLink] = useState(
+        isAddFood ? '' : food && food.imageLink
+    );
 
     useEffect(() => {
-        setName(food && food.name);
-        setChef(food && food.chef);
-        setDescription(food && food.description);
-        setImageLink(food && food.imageLink);
+        setName(isAddFood ? '' : food && food.name);
+        setChef(isAddFood ? '' : food && food.chef);
+        setDescription(isAddFood ? '' : food && food.description);
+        setImageLink(isAddFood ? '' : food && food.imageLink);
     }, [food]);
+
+    const handleCancelButton = (e) => {
+        e.preventDefault();
+        handleCloseModal();
+    };
+
+    const handleConfirmButton = (e) => {
+        e.preventDefault();
+        handleConfirmModal(name, description, chef, imageLink);
+    };
 
     return (
         <Modal
@@ -27,7 +42,9 @@ const EditFoodModal = ({
             style={customStyles}
             contentLabel={'Edit Food Modal'}
         >
-            <h2 className="mb-4">Cập nhật tên món</h2>
+            <h2 className="mb-4">
+                {isAddFood ? 'Thêm món ăn' : 'Cập nhật tên món'}
+            </h2>
             <form>
                 <div>
                     <label htmlFor="name">Tên món</label>
@@ -36,7 +53,7 @@ const EditFoodModal = ({
                         name="name"
                         className="form-control mb-3"
                         placeholder="Tên món..."
-                        value={name}
+                        value={name || ''}
                         onChange={(e) => setName(e.target.value)}
                     />
                     <label htmlFor="chef">Đầu bếp</label>
@@ -45,7 +62,7 @@ const EditFoodModal = ({
                         name="chef"
                         className="form-control mb-3"
                         placeholder="Đầu bếp..."
-                        value={chef}
+                        value={chef || ''}
                         onChange={(e) => setChef(e.target.value)}
                     />
                     <label htmlFor="description">Mô tả</label>
@@ -54,7 +71,7 @@ const EditFoodModal = ({
                         name="description"
                         className="form-control mb-3"
                         placeholder="Mô tả..."
-                        value={description}
+                        value={description || ''}
                         onChange={(e) => setDescription(e.target.value)}
                     />
 
@@ -64,24 +81,22 @@ const EditFoodModal = ({
                         name="img"
                         className="form-control mb-3"
                         placeholder="Link ảnh..."
-                        value={imageLink}
-                        onChange={(e) => setDescription(e.target.value)}
+                        value={imageLink || ''}
+                        onChange={(e) => setImageLink(e.target.value)}
                     />
                 </div>
                 <div className="d-flex justify-content-between">
                     <button
                         className="btn btn-secondary btn-round mt-4 mr-4"
-                        onClick={handleCloseModal}
+                        onClick={(e) => handleCancelButton(e)}
                     >
                         Hủy
                     </button>
                     <button
                         className="btn btn-success btn-round mt-4"
-                        onClick={() =>
-                            handleConfirmModal(name, description, chef)
-                        }
+                        onClick={(e) => handleConfirmButton(e)}
                     >
-                        Cập nhật
+                        {isAddFood ? 'Thêm món' : 'Cập nhật'}
                     </button>
                 </div>
             </form>
