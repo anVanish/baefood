@@ -4,11 +4,9 @@ import heroBackground from '../../assets/images/hero-bg.jpg';
 import CartIcon from './CartIcon';
 
 const Header = () => {
-    const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
-
-    useEffect(() => {
-        setUser(JSON.parse(localStorage.getItem('user')));
-    }, [user]);
+    const [user, setUser] = useState(() =>
+        JSON.parse(localStorage.getItem('user'))
+    );
 
     return (
         <div className="hero_area">

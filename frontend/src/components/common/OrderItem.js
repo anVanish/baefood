@@ -24,25 +24,30 @@ const OrderItem = ({ order }) => {
                             {formatServeTimeToVN(order.serveTime)},{' '}
                             {formatServeDate(order.serveDate)}
                         </h5>
-                        {!order.isDone ? (
+                        {order.isDone ? (
+                            <Link className="text-success">Hoàn tất</Link>
+                        ) : order.isExpired ? (
+                            <Link className="text-danger">Hết hạn</Link>
+                        ) : order.isReady ? (
+                            <Link className="text-root"> Đang lên món</Link>
+                        ) : (
                             <Link
                                 onClick={() => handleDeleteOrder(order._id)}
                                 className="text-danger"
                             >
                                 <i className="fa fa-trash"></i>
                             </Link>
-                        ) : (
-                            <Link
-                                to=""
-                                className="text-success"
-                            >
-                                Bếp đang chuẩn bị
-                            </Link>
                         )}
                     </div>
                     {order.foodIds.map((food) => (
-                        <FoodOrderItem food={food} />
+                        <FoodOrderItem
+                            key={food._id}
+                            food={food}
+                        />
                     ))}
+                    <div className="d-flex mx-3 mt-2">
+                        <h6>note: {order.note}</h6>
+                    </div>
                 </div>
             </div>
         </div>

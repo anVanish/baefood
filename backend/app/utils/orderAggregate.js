@@ -1,48 +1,43 @@
-const Orders = require('../models/Orders')
-const mongoose = require('mongoose')
+const Orders = require('../models/Orders');
+const mongoose = require('mongoose');
 
 exports.listOrdersByUserId = async (userId) => {
-    try{
-        const currentDate = new Date()
-
+    try {
         const orders = Orders.aggregate([
-            { $match: {
+            {
+                $match: {
                     userId: new mongoose.Types.ObjectId(userId),
-                } 
+                },
             },
-            { $unwind: "$foodIds" },
+            { $unwind: '$foodIds' },
             {
                 $lookup: {
                     from: 'foods',
-                    localField: "foodIds",
-                    foreignField: "_id",
-                    as: 'foodIds'
-                }
+                    localField: 'foodIds',
+                    foreignField: '_id',
+                    as: 'foodIds',
+                },
             },
-            { $unwind: "$foodIds" },
+            { $unwind: '$foodIds' },
             {
                 $group: {
-                    _id: "$_id",
-                    userId: { $first: "$userId" },
-                    serveDate: { $first: "$serveDate" },
-                    serveTime: { $first: "$serveTime" },
-                    note: { $first: "$note" },
-                    foodIds: { $push: "$foodIds" },
-                    createdAt: { $first: "$createdAt" },
-                    updatedAt: { $first: "$updatedAt" }
-                }
+                    _id: '$_id',
+                    userId: { $first: '$userId' },
+                    serveDate: { $first: '$serveDate' },
+                    serveTime: { $first: '$serveTime' },
+                    note: { $first: '$note' },
+                    foodIds: { $push: '$foodIds' },
+                    createdAt: { $first: '$createdAt' },
+                    updatedAt: { $first: '$updatedAt' },
+                    isExpired: { $first: '$isExpired' },
+                    isDone: { $first: '$isDone' },
+                },
             },
-            {
-                $addFields: {
-                  serveDateDiff: { $abs: { $subtract: ["$serveDate", currentDate] } }
-                }
-            },
-            { $sort: { isDone: 1, serveDateDiff: 1 } },
-            { $project: { serveDateDiff: 0 } }
-        ])
+            { $sort: { isExpired: 1, isDone: 1 } },
+        ]);
 
-        return orders
-    } catch(error){
-        throw error
-    }    
-}
+        return orders;
+    } catch (error) {
+        throw error;
+    }
+};
