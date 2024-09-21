@@ -7,6 +7,7 @@ async function updateExpiredOrder() {
         const result = await Orders.updateMany(
             {
                 isExpired: false,
+                isDone: false,
                 serveDate: { $lt: now },
             },
             {

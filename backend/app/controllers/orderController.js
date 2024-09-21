@@ -25,6 +25,8 @@ exports.myOrders = async (req, res, next) => {
         tabsInfo.ready = await Orders.countDocuments({
             ...idFilter,
             isReady: true,
+            isDone: false,
+            isExpired: false,
         });
         tabsInfo.done = await Orders.countDocuments({
             ...idFilter,
@@ -142,6 +144,38 @@ exports.deleteMyOrder = async (req, res, next) => {
                 .setSuccess('Order canceled')
                 .setData('orders', orders)
         );
+    } catch (error) {
+        next(error);
+    }
+};
+
+//PATCH /:orderId/ready
+exports.setReadyOrder = async (req, res, next) => {
+    try {
+        const { orderId } = req.params;
+        const order = await Orders.findOneAndUpdate(
+            { _id: orderId, isReady: false },
+            { isReady: true }
+        );
+        if (!order) throw new ApiError('Order not found', 404);
+
+        res.json(new ApiResponse().setSuccess('Order set to ready'));
+    } catch (error) {
+        next(error);
+    }
+};
+
+//PATCH /:orderId/done
+exports.setDoneOrder = async (req, res, next) => {
+    try {
+        const { orderId } = req.params;
+        const order = await Orders.findOneAndUpdate(
+            { _id: orderId, isDone: false },
+            { isDone: true }
+        );
+        if (!order) throw new ApiError('Order not found', 404);
+
+        res.json(new ApiResponse().setSuccess('Order set to done'));
     } catch (error) {
         next(error);
     }

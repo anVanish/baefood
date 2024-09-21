@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import OrderItem from '../../components/common/OrderItem';
-import { getOrders } from '../../slices/orderSlice';
+import {
+    deleteOrder,
+    getOrders,
+    setDoneOrder,
+    setReadyOrder,
+} from '../../slices/orderSlice';
 import { closeModal, openModal } from '../../slices/loginModalSlice';
 import LoginModal from '../../components/modal/LoginModal';
 import { Link } from 'react-router-dom';
@@ -67,11 +72,30 @@ const AdminOrder = () => {
     };
 
     const handleConfirmModal = () => {
-        alert(`${actionFunction} ${orderId}`);
+        const dispatchAction =
+            actionFunction === 'delete'
+                ? dispatch(deleteOrder({ orderId }))
+                : actionFunction === 'ready'
+                ? dispatch(setReadyOrder({ orderId }))
+                : actionFunction === 'check'
+                ? dispatch(setDoneOrder({ orderId }))
+                : null;
+        if (dispatchAction)
+            dispatchAction
+                .then((response) => {
+                    if (response.meta.requestStatus === 'fulfilled') {
+                        dispatch(getOrders());
+                        setIsShowModal(false);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Login failed:', error);
+                });
     };
 
     //#endregion
 
+    console.log(orders);
     return (
         <>
             {!user ? (
@@ -111,21 +135,22 @@ const AdminOrder = () => {
 
                         <section>
                             <div className="row grid">
-                                {orders.length === 0 && (
+                                {orders && orders.length === 0 && (
                                     <div className="col-sm-12 col-lg-12">
                                         <p className="text-center pt-4">
                                             Chưa có món nào bé ơi!!
                                         </p>
                                     </div>
                                 )}
-                                {orders.map((order) => (
-                                    <OrderItem
-                                        key={order._id}
-                                        order={order}
-                                        isAdmin={true}
-                                        handleOpenModal={handleOpenModal}
-                                    />
-                                ))}
+                                {orders &&
+                                    orders.map((order) => (
+                                        <OrderItem
+                                            key={order._id}
+                                            order={order}
+                                            isAdmin={true}
+                                            handleOpenModal={handleOpenModal}
+                                        />
+                                    ))}
                             </div>
                         </section>
                     </div>

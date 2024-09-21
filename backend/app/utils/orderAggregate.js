@@ -6,7 +6,7 @@ exports.listOrdersByUserId = async (userId, tab) => {
         const tabsOption = {
             all: {},
             waiting: { isDone: false, isExpired: false, isReady: false },
-            ready: { isReady: true },
+            ready: { isReady: true, isDone: false, isExpired: false },
             done: { isDone: true },
             expired: { isExpired: true },
         };
@@ -43,10 +43,11 @@ exports.listOrdersByUserId = async (userId, tab) => {
                     createdAt: { $first: '$createdAt' },
                     updatedAt: { $first: '$updatedAt' },
                     isExpired: { $first: '$isExpired' },
+                    isReady: { $first: '$isReady' },
                     isDone: { $first: '$isDone' },
                 },
             },
-            { $sort: { isExpired: 1, isDone: 1, createdAt: 1 } },
+            { $sort: { isExpired: 1, isDone: 1, isReady: -1, createdAt: 1 } },
         ]);
 
         return orders;
