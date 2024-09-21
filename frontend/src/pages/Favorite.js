@@ -20,10 +20,17 @@ const Favorite = () => {
         }
     }, [dispatch]);
 
+    //on login success
+    const onLoginSuccess = () => {
+        const storedUser = localStorage.getItem('user');
+        setUser(JSON.parse(storedUser));
+        dispatch(closeModal());
+    };
+
     return (
         <>
             {!user ? (
-                <LoginModal />
+                <LoginModal onLoginSuccess={onLoginSuccess} />
             ) : (
                 <section className="food_section layout_padding">
                     <div className="container">

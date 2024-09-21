@@ -39,6 +39,14 @@ const AdminOrder = () => {
         }
     }, [dispatch]);
 
+    //on login success
+    const onLoginSuccess = () => {
+        const storedUser = localStorage.getItem('user');
+        setUser(JSON.parse(storedUser));
+        dispatch(closeModal());
+        dispatch(getOrders());
+    };
+
     //#region handle change tab
     const handleChangeTab = (e, tabIndex) => {
         e.preventDefault();
@@ -96,12 +104,10 @@ const AdminOrder = () => {
     };
 
     //#endregion
-
-    console.log(orders);
     return (
         <>
             {!user ? (
-                <LoginModal />
+                <LoginModal onLoginSuccess={onLoginSuccess} />
             ) : (
                 <section className="food_section layout_padding">
                     <div className="container">

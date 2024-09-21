@@ -26,6 +26,14 @@ const Cart = () => {
         }
     }, [dispatch]);
 
+    //on login success
+    const onLoginSuccess = () => {
+        const storedUser = localStorage.getItem('user');
+        setUser(JSON.parse(storedUser));
+        dispatch(closeModal());
+        dispatch(getCart());
+    };
+
     //open order option modal
     const handleModalOpen = () => {
         setIsModalShow(true);
@@ -51,7 +59,7 @@ const Cart = () => {
     return (
         <>
             {!user ? (
-                <LoginModal />
+                <LoginModal onLoginSuccess={onLoginSuccess} />
             ) : (
                 <section className="food_section layout_padding">
                     <div className="container">

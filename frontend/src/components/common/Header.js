@@ -1,12 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import heroBackground from '../../assets/images/hero-bg.jpg';
 import CartIcon from './CartIcon';
 
 const Header = () => {
-    const [user, setUser] = useState(() =>
+    const { user } = useSelector((state) => state.auth);
+    const [userAuth, setUserAuth] = useState(() =>
         JSON.parse(localStorage.getItem('user'))
     );
+
+    useEffect(() => {
+        if (user) setUserAuth(user);
+    }, [user]);
 
     return (
         <div className="hero_area">
@@ -18,7 +24,7 @@ const Header = () => {
             </div>
             <header className="header_section">
                 <div className="container">
-                    {user && user.isAdmin ? (
+                    {userAuth && userAuth.isAdmin ? (
                         <nav className="navbar navbar-expand-lg custom_nav-container justify-content-between">
                             <Link
                                 className="navbar-brand"
@@ -34,7 +40,7 @@ const Header = () => {
                             >
                                 <div className="user_option">
                                     <Link className="user_link">
-                                        Xin chào admin, {user.name}
+                                        Xin chào admin, {userAuth.name}
                                     </Link>
                                     <Link
                                         to="/admin/orders"
