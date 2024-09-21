@@ -1,12 +1,20 @@
 const Orders = require('../models/Orders');
 const mongoose = require('mongoose');
 
-exports.listOrdersByUserId = async (userId) => {
+exports.listOrdersByUserId = async (userId, tab) => {
     try {
+        const tabsOption = {
+            all: {},
+            waiting: { isDone: false, isExpired: false },
+            done: { isDone: true, isExpired: false },
+            expired: { isDone: false, isExpired: true },
+        };
+
         const orders = Orders.aggregate([
             {
                 $match: {
                     userId: new mongoose.Types.ObjectId(userId),
+                    ...tabsOption[tab],
                 },
             },
             { $unwind: '$foodIds' },

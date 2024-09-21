@@ -54,10 +54,10 @@ export const addOrder = createAsyncThunk(
 
 export const getOrders = createAsyncThunk(
     'order/list',
-    async (_, { rejectWithValue }) => {
+    async ({ tab = 'all' }, { rejectWithValue }) => {
         try {
             const response = await axios.get(
-                `${orderUrl}`,
+                `${orderUrl}?tab=${tab}`,
                 getAuthorizationHeader()
             );
 

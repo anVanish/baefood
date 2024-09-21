@@ -4,11 +4,14 @@ import OrderItem from '../components/common/OrderItem';
 import { getOrders } from '../slices/orderSlice';
 import { closeModal, openModal } from '../slices/loginModalSlice';
 import LoginModal from '../components/modal/LoginModal';
+import { Link } from 'react-router-dom';
+import { orderTabs } from '../constants/orderTabs';
 
 const Order = () => {
     const dispatch = useDispatch();
     const { orders } = useSelector((state) => state.order);
     const [user, setUser] = useState(null);
+    const [selectedTab, setSelectedTab] = useState(0);
 
     //check if user logged in
     useEffect(() => {
@@ -22,6 +25,16 @@ const Order = () => {
         }
     }, [dispatch]);
 
+    //handle change tab
+    const handleChangeTab = (e, tabIndex) => {
+        e.preventDefault();
+        setSelectedTab(tabIndex);
+    };
+
+    useEffect(() => {
+        dispatch(getOrders({ tab: orderTabs[selectedTab].tab }));
+    }, [selectedTab]);
+
     return (
         <>
             {!user ? (
@@ -31,6 +44,29 @@ const Order = () => {
                     <div className="container">
                         <div className="heading_container heading_center">
                             <h2>Yêu cầu lên món</h2>
+                        </div>
+                        <div className="d-flex my-4">
+                            <ul className="nav nav-tabs w-100">
+                                {orderTabs.map((tab, index) => (
+                                    <li
+                                        key={index}
+                                        className="nav-item flex-fill"
+                                    >
+                                        <Link
+                                            onClick={(e) =>
+                                                handleChangeTab(e, index)
+                                            }
+                                            className={
+                                                index === selectedTab
+                                                    ? 'nav-link text-primary text-center active'
+                                                    : 'nav-link text-dark text-center'
+                                            }
+                                        >
+                                            {tab.text}
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
 
                         <section>

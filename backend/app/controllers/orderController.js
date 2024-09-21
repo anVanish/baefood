@@ -8,7 +8,8 @@ const { listOrdersByUserId } = require('../utils/orderAggregate');
 //GET /
 exports.myOrders = async (req, res, next) => {
     try {
-        const orders = await listOrdersByUserId(req.user._id);
+        const { tab } = req.query;
+        const orders = await listOrdersByUserId(req.user._id, tab);
         res.json(new ApiResponse().setData('orders', orders));
     } catch (error) {
         next(error);
