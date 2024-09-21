@@ -1,4 +1,0 @@
-exports.usersData = [{
-    'email': '',
-    'password': '',
-}]
