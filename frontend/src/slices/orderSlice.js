@@ -104,6 +104,7 @@ const orderSlice = createSlice({
     name: 'order',
     initialState: {
         orders: [],
+        tabsInfo: null,
         serveTimeLoading: false,
         serveTimeError: null,
         availableTimes: null,
@@ -157,6 +158,7 @@ const orderSlice = createSlice({
                 state.getOrdersLoading = false;
                 state.getOrdersError = null;
                 state.orders = action.payload.orders;
+                state.tabsInfo = action.payload.tabsInfo;
             })
             .addCase(getOrders.rejected, (state, action) => {
                 state.getOrdersLoading = false;

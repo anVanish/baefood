@@ -9,7 +9,7 @@ import { orderTabs } from '../constants/orderTabs';
 
 const Order = () => {
     const dispatch = useDispatch();
-    const { orders } = useSelector((state) => state.order);
+    const { orders, tabsInfo } = useSelector((state) => state.order);
     const [user, setUser] = useState(null);
     const [selectedTab, setSelectedTab] = useState(0);
 
@@ -62,7 +62,10 @@ const Order = () => {
                                                     : 'nav-link text-dark text-center'
                                             }
                                         >
-                                            {tab.text}
+                                            {tab.text} (
+                                            {(tabsInfo && tabsInfo[tab.tab]) ||
+                                                0}
+                                            )
                                         </Link>
                                     </li>
                                 ))}

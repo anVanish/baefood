@@ -10,7 +10,27 @@ exports.myOrders = async (req, res, next) => {
     try {
         const { tab } = req.query;
         const orders = await listOrdersByUserId(req.user._id, tab);
-        res.json(new ApiResponse().setData('orders', orders));
+
+        const tabsInfo = {};
+        tabsInfo.all = await Orders.countDocuments({});
+        tabsInfo.waiting = await Orders.countDocuments({
+            isDone: false,
+            isExpired: false,
+        });
+        tabsInfo.done = await Orders.countDocuments({
+            isDone: true,
+            isExpired: false,
+        });
+        tabsInfo.expired = await Orders.countDocuments({
+            isDone: false,
+            isExpired: true,
+        });
+
+        res.json(
+            new ApiResponse()
+                .setData('orders', orders)
+                .setData('tabsInfo', tabsInfo)
+        );
     } catch (error) {
         next(error);
     }
