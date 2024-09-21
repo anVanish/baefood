@@ -7,6 +7,7 @@ const {
 } = require('./middlewares/notFoundErrorHandling');
 const { route } = require('./routes');
 const mongodb = require('./config/mongodb');
+const path = require('path');
 
 const app = express();
 dotenv.config();
@@ -21,9 +22,25 @@ require('./app/utils/cron/orderCron');
 app.use(morgan('short'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, 'build')));
 
 //route
 route(app);
+
+const frontendRoutes = [
+    '',
+    '/favorites',
+    '/carts',
+    '/orders',
+    '/admin',
+    '/admin/orders',
+];
+
+frontendRoutes.forEach((route) => {
+    app.get(route, (req, res) => {
+        res.sendFile(path.join(__dirname, 'build', 'index.html'));
+    });
+});
 
 //handle errors
 app.use(notFoundErrorHandling);

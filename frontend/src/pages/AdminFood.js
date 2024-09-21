@@ -1,18 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { closeModal, openModal } from '../../slices/loginModalSlice';
-import LoginModal from '../../components/modal/LoginModal';
-import {
-    getFoods,
-    updateFood,
-    deleteFood,
-    addFood,
-} from '../../slices/foodSlice';
-import { getCategories } from '../../slices/categorySlice';
-import { formatServeDate } from '../../utils/ServeDateFormat';
-import ConfirmModal from '../../components/modal/ConfirmModal';
-import EditFoodModal from '../../components/modal/EditFoodModal';
+import { closeModal, openModal } from '../slices/loginModalSlice';
+import LoginModal from '../components/modal/LoginModal';
+import { getFoods, updateFood, deleteFood, addFood } from '../slices/foodSlice';
+import { getCategories } from '../slices/categorySlice';
+import { formatServeDate } from '../utils/ServeDateFormat';
+import ConfirmModal from '../components/modal/ConfirmModal';
+import EditFoodModal from '../components/modal/EditFoodModal';
 
 const AdminFood = () => {
     const dispatch = useDispatch();

@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import OrderItem from '../../components/common/OrderItem';
+import OrderItem from '../components/common/OrderItem';
 import {
     deleteOrder,
     getOrders,
     setDoneOrder,
     setReadyOrder,
-} from '../../slices/orderSlice';
-import { closeModal, openModal } from '../../slices/loginModalSlice';
-import LoginModal from '../../components/modal/LoginModal';
+} from '../slices/orderSlice';
+import { closeModal, openModal } from '../slices/loginModalSlice';
+import LoginModal from '../components/modal/LoginModal';
 import { Link } from 'react-router-dom';
-import { orderTabs } from '../../constants/orderTabs';
-import ConfirmModal from '../../components/modal/ConfirmModal';
+import { orderTabs } from '../constants/orderTabs';
+import ConfirmModal from '../components/modal/ConfirmModal';
 
 const AdminOrder = () => {
     const dispatch = useDispatch();

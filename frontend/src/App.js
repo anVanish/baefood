@@ -15,14 +15,14 @@ import NotFound from './pages/NotFound';
 import Favorite from './pages/Favorite';
 import Order from './pages/Order';
 import Cart from './pages/Cart';
-import AdminFood from './pages/admin/AdminFood';
+import AdminFood from './pages/AdminFood';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { toast, ToastContainer } from 'react-toastify';
 import LoginModal from './components/modal/LoginModal';
 import { useEffect } from 'react';
 import { clearToast } from './slices/toastSlice';
-import AdminOrder from './pages/admin/AdminOrder';
+import AdminOrder from './pages/AdminOrder';
 
 function App() {
     const dispatch = useDispatch();
