@@ -16,8 +16,8 @@ const OrderItem = ({ order }) => {
     };
 
     return (
-        <div className="col-sm-6 col-lg-4">
-            <div className="box">
+        <div className="col-sm-6 col-lg-4 mb-4">
+            <div className="box h-100">
                 <div>
                     <div className="d-flex justify-content-between order-box">
                         <h5 className="text-dark">

@@ -30,11 +30,11 @@ export const getServeTime = createAsyncThunk(
 
 export const addOrder = createAsyncThunk(
     'order/addOrder',
-    async ({ serveTime, serveDate }, { rejectWithValue }) => {
+    async ({ serveTime, serveDate, note }, { rejectWithValue }) => {
         try {
             const response = await axios.post(
                 `${orderUrl}`,
-                { serveTime, serveDate },
+                { serveTime, serveDate, note },
                 getAuthorizationHeader()
             );
             const data = response.data;

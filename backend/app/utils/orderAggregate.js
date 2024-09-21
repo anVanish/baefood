@@ -41,7 +41,7 @@ exports.listOrdersByUserId = async (userId, tab) => {
                     isDone: { $first: '$isDone' },
                 },
             },
-            { $sort: { isExpired: 1, isDone: 1 } },
+            { $sort: { isExpired: 1, isDone: 1, createdAt: 1 } },
         ]);
 
         return orders;

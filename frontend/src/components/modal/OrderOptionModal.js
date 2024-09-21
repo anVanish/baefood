@@ -11,6 +11,7 @@ const OrderModal = ({ show, handleClose, handleSubmit }) => {
     const { availableTimes } = useSelector((state) => state.order);
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedTime, setSelectedTime] = useState('');
+    const [note, setNote] = useState('');
 
     //trigger when day changes
     useEffect(() => {
@@ -39,10 +40,19 @@ const OrderModal = ({ show, handleClose, handleSubmit }) => {
         setSelectedDate(availableTimes[selectedTimeKey]);
     };
 
+    //handle change note
+    const handleChangeNote = (e) => {
+        setNote(e.target.value);
+    };
+
     //handle submit
     const handleSubmitModal = (e) => {
         e.preventDefault();
-        handleSubmit({ serveDate: selectedDate, serveTime: selectedTime });
+        handleSubmit({
+            serveDate: selectedDate,
+            serveTime: selectedTime,
+            note,
+        });
         handleClose();
     };
 
@@ -55,7 +65,7 @@ const OrderModal = ({ show, handleClose, handleSubmit }) => {
         >
             <h2 className="mb-4">Bé muốn khi nào ăn</h2>
             {/* <h2 className="mb-4">Đăng nhập nào</h2> */}
-            <form>
+            <form autoComplete="off">
                 <div>
                     <div>
                         <label htmlFor="day">Ngày: </label>
@@ -94,6 +104,16 @@ const OrderModal = ({ show, handleClose, handleSubmit }) => {
                                 <option>Cuối ngày òi bé ơi</option>
                             )}
                         </select>
+                    </div>
+                    <div>
+                        <label htmlFor="note">Ghi chú</label>
+                        <input
+                            id="note"
+                            name="note"
+                            className="form-control mb-3"
+                            placeholder="Ghi chú..."
+                            onChange={(e) => handleChangeNote(e)}
+                        />
                     </div>
                 </div>
 

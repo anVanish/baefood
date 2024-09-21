@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import heroBackground from '../../assets/images/hero-bg.jpg';
 import CartIcon from './CartIcon';

@@ -33,7 +33,7 @@ const Order = () => {
 
     useEffect(() => {
         dispatch(getOrders({ tab: orderTabs[selectedTab].tab }));
-    }, [selectedTab]);
+    }, [dispatch, selectedTab]);
 
     return (
         <>

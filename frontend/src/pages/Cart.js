@@ -37,8 +37,8 @@ const Cart = () => {
     };
 
     //submit order options
-    const handleModalSubmit = ({ serveDate, serveTime }) => {
-        dispatch(addOrder({ serveDate, serveTime }))
+    const handleModalSubmit = ({ serveDate, serveTime, note }) => {
+        dispatch(addOrder({ serveDate, serveTime, note }))
             .unwrap()
             .then(() => {
                 dispatch(getCart());
