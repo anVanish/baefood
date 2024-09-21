@@ -1,17 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import OrderItem from '../components/common/OrderItem';
-import { getOrders } from '../slices/orderSlice';
 import { closeModal, openModal } from '../slices/loginModalSlice';
 import LoginModal from '../components/modal/LoginModal';
 import { Link } from 'react-router-dom';
 import { orderTabs } from '../constants/orderTabs';
+import { deleteOrder, getOrders } from '../slices/orderSlice';
+import ConfirmModal from '../components/modal/ConfirmModal';
 
 const Order = () => {
     const dispatch = useDispatch();
     const { orders, tabsInfo } = useSelector((state) => state.order);
     const [user, setUser] = useState(null);
     const [selectedTab, setSelectedTab] = useState(0);
+
+    //modal
+    const [isShowModal, setIsShowModal] = useState(false);
+    const [title, setTitle] = useState('');
+    const [content, setContent] = useState('');
+    const [isDanger, setIsDanger] = useState(false);
+    const [orderId, setOrderId] = useState('');
+    const [actionFunction, setActionFunction] = useState(null);
 
     //check if user logged in
     useEffect(() => {
@@ -34,6 +43,45 @@ const Order = () => {
     useEffect(() => {
         dispatch(getOrders({ tab: orderTabs[selectedTab].tab }));
     }, [dispatch, selectedTab]);
+
+    //#region handle with modal
+    //handle confirm modal
+    const handleCloseModal = () => {
+        setIsShowModal(false);
+    };
+
+    const handleOpenModal = (
+        actionFunction,
+        orderId,
+        title,
+        content,
+        danger = false
+    ) => {
+        setActionFunction(actionFunction);
+        setOrderId(orderId);
+        setTitle(title);
+        setContent(content);
+        setIsDanger(danger);
+        setIsShowModal(true);
+    };
+
+    const handleConfirmModal = () => {
+        if (actionFunction === 'delete')
+            dispatch(deleteOrder({ orderId }))
+                .then((response) => {
+                    if (response.meta.requestStatus === 'fulfilled') {
+                        dispatch(
+                            getOrders({ tab: orderTabs[selectedTab].tab })
+                        );
+                        setIsShowModal(false);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Login failed:', error);
+                });
+    };
+
+    //#endregion
 
     return (
         <>
@@ -85,6 +133,7 @@ const Order = () => {
                                     <OrderItem
                                         key={order._id}
                                         order={order}
+                                        handleOpenModal={handleOpenModal}
                                     />
                                 ))}
                             </div>
@@ -92,6 +141,14 @@ const Order = () => {
                     </div>
                 </section>
             )}
+            <ConfirmModal
+                show={isShowModal}
+                handleCloseModal={handleCloseModal}
+                handleConfirmModal={handleConfirmModal}
+                title={title}
+                content={content}
+                danger={isDanger}
+            />
         </>
     );
 };

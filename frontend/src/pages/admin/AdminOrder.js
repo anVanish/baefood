@@ -84,7 +84,9 @@ const AdminOrder = () => {
             dispatchAction
                 .then((response) => {
                     if (response.meta.requestStatus === 'fulfilled') {
-                        dispatch(getOrders());
+                        dispatch(
+                            getOrders({ tab: orderTabs[selectedTab].tab })
+                        );
                         setIsShowModal(false);
                     }
                 })

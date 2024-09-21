@@ -13,9 +13,9 @@ exports.myOrders = async (req, res, next) => {
         const consideredId = isAdmin ? '' : _id;
         const orders = await listOrdersByUserId(consideredId, tab);
 
-        const idFilter = isAdmin ? {} : { _id };
+        const idFilter = isAdmin ? {} : { userId: _id };
         const tabsInfo = {};
-        tabsInfo.all = await Orders.countDocuments({ ...idFilter });
+        tabsInfo.all = await Orders.countDocuments(idFilter);
         tabsInfo.waiting = await Orders.countDocuments({
             ...idFilter,
             isDone: false,
