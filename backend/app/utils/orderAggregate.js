@@ -10,10 +10,14 @@ exports.listOrdersByUserId = async (userId, tab) => {
             expired: { isDone: false, isExpired: true },
         };
 
+        const userOption = userId
+            ? { userId: new mongoose.Types.ObjectId(userId) }
+            : {};
+
         const orders = Orders.aggregate([
             {
                 $match: {
-                    userId: new mongoose.Types.ObjectId(userId),
+                    ...userOption,
                     ...tabsOption[tab],
                 },
             },

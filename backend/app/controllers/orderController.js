@@ -9,19 +9,25 @@ const { listOrdersByUserId } = require('../utils/orderAggregate');
 exports.myOrders = async (req, res, next) => {
     try {
         const { tab } = req.query;
-        const orders = await listOrdersByUserId(req.user._id, tab);
+        const { _id, isAdmin } = req.user;
+        const consideredId = isAdmin ? '' : _id;
+        const orders = await listOrdersByUserId(consideredId, tab);
 
+        const idFilter = isAdmin ? {} : { _id };
         const tabsInfo = {};
-        tabsInfo.all = await Orders.countDocuments({});
+        tabsInfo.all = await Orders.countDocuments({ ...idFilter });
         tabsInfo.waiting = await Orders.countDocuments({
+            ...idFilter,
             isDone: false,
             isExpired: false,
         });
         tabsInfo.done = await Orders.countDocuments({
+            ...idFilter,
             isDone: true,
             isExpired: false,
         });
         tabsInfo.expired = await Orders.countDocuments({
+            ...idFilter,
             isDone: false,
             isExpired: true,
         });

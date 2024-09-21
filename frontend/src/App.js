@@ -22,6 +22,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import LoginModal from './components/modal/LoginModal';
 import { useEffect } from 'react';
 import { clearToast } from './slices/toastSlice';
+import AdminOrder from './pages/admin/AdminOrder';
 
 function App() {
     const dispatch = useDispatch();
@@ -68,6 +69,11 @@ function App() {
                             exact
                             path="/admin"
                             element={<AdminFood />}
+                        />
+                        <Route
+                            exact
+                            path="/admin/orders"
+                            element={<AdminOrder />}
                         />
                         <Route
                             path="*"
