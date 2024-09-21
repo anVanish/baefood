@@ -6,12 +6,21 @@ import { closeModal, openModal } from '../../slices/loginModalSlice';
 import LoginModal from '../../components/modal/LoginModal';
 import { Link } from 'react-router-dom';
 import { orderTabs } from '../../constants/orderTabs';
+import ConfirmModal from '../../components/modal/ConfirmModal';
 
 const AdminOrder = () => {
     const dispatch = useDispatch();
     const { orders, tabsInfo } = useSelector((state) => state.order);
     const [user, setUser] = useState(null);
     const [selectedTab, setSelectedTab] = useState(0);
+
+    //modal
+    const [isShowModal, setIsShowModal] = useState(false);
+    const [title, setTitle] = useState('');
+    const [content, setContent] = useState('');
+    const [isDanger, setIsDanger] = useState(false);
+    const [orderId, setOrderId] = useState('');
+    const [actionFunction, setActionFunction] = useState(null);
 
     //check if user logged in
     useEffect(() => {
@@ -25,7 +34,7 @@ const AdminOrder = () => {
         }
     }, [dispatch]);
 
-    //handle change tab
+    //#region handle change tab
     const handleChangeTab = (e, tabIndex) => {
         e.preventDefault();
         setSelectedTab(tabIndex);
@@ -34,6 +43,34 @@ const AdminOrder = () => {
     useEffect(() => {
         dispatch(getOrders({ tab: orderTabs[selectedTab].tab }));
     }, [dispatch, selectedTab]);
+    //#endregion
+
+    //#region handle with modal
+    //handle confirm modal
+    const handleCloseModal = () => {
+        setIsShowModal(false);
+    };
+
+    const handleOpenModal = (
+        actionFunction,
+        orderId,
+        title,
+        content,
+        danger = false
+    ) => {
+        setActionFunction(actionFunction);
+        setOrderId(orderId);
+        setTitle(title);
+        setContent(content);
+        setIsDanger(danger);
+        setIsShowModal(true);
+    };
+
+    const handleConfirmModal = () => {
+        alert(`${actionFunction} ${orderId}`);
+    };
+
+    //#endregion
 
     return (
         <>
@@ -85,6 +122,8 @@ const AdminOrder = () => {
                                     <OrderItem
                                         key={order._id}
                                         order={order}
+                                        isAdmin={true}
+                                        handleOpenModal={handleOpenModal}
                                     />
                                 ))}
                             </div>
@@ -92,6 +131,14 @@ const AdminOrder = () => {
                     </div>
                 </section>
             )}
+            <ConfirmModal
+                show={isShowModal}
+                handleCloseModal={handleCloseModal}
+                handleConfirmModal={handleConfirmModal}
+                title={title}
+                content={content}
+                danger={isDanger}
+            />
         </>
     );
 };

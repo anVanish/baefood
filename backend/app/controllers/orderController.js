@@ -20,15 +20,18 @@ exports.myOrders = async (req, res, next) => {
             ...idFilter,
             isDone: false,
             isExpired: false,
+            isReady: false,
+        });
+        tabsInfo.ready = await Orders.countDocuments({
+            ...idFilter,
+            isReady: true,
         });
         tabsInfo.done = await Orders.countDocuments({
             ...idFilter,
             isDone: true,
-            isExpired: false,
         });
         tabsInfo.expired = await Orders.countDocuments({
             ...idFilter,
-            isDone: false,
             isExpired: true,
         });
 

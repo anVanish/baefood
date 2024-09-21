@@ -5,9 +5,10 @@ exports.listOrdersByUserId = async (userId, tab) => {
     try {
         const tabsOption = {
             all: {},
-            waiting: { isDone: false, isExpired: false },
-            done: { isDone: true, isExpired: false },
-            expired: { isDone: false, isExpired: true },
+            waiting: { isDone: false, isExpired: false, isReady: false },
+            ready: { isReady: true },
+            done: { isDone: true },
+            expired: { isExpired: true },
         };
 
         const userOption = userId
