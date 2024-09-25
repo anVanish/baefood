@@ -1,11 +1,11 @@
-import axios from 'axios';
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { toast } from 'react-toastify';
-import { getAuthorizationHeader } from '../utils/AuthorizationHeader';
-import { orderUrl } from '../constants/urlConstants';
+import axios from "axios";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
+import { getAuthorizationHeader } from "../utils/AuthorizationHeader";
+import { orderUrl } from "../constants/urlConstants";
 
 export const getServeTime = createAsyncThunk(
-    'order/getServeTime',
+    "order/getServeTime",
     async ({ day = 0 }, { rejectWithValue }) => {
         try {
             const response = await axios.get(
@@ -29,7 +29,7 @@ export const getServeTime = createAsyncThunk(
 );
 
 export const addOrder = createAsyncThunk(
-    'order/addOrder',
+    "order/addOrder",
     async ({ serveTime, serveDate, note }, { rejectWithValue }) => {
         try {
             const response = await axios.post(
@@ -52,9 +52,34 @@ export const addOrder = createAsyncThunk(
     }
 );
 
+export const reOrder = createAsyncThunk(
+    "order/reOrder",
+    async ({ orderId, serveTime, serveDate, note }, { rejectWithValue }) => {
+        try {
+            const response = await axios.post(
+                `${orderUrl}/${orderId}`,
+                { serveDate, serveTime, note },
+                getAuthorizationHeader()
+            );
+
+            const data = response.data;
+            if (data.success) {
+                return data.data;
+            } else {
+                return rejectWithValue(data.message);
+            }
+        } catch (error) {
+            if (!error.response) {
+                throw error;
+            }
+            return rejectWithValue(error.response.data.message);
+        }
+    }
+);
+
 export const getOrders = createAsyncThunk(
-    'order/list',
-    async ({ tab = 'all' }, { rejectWithValue }) => {
+    "order/list",
+    async ({ tab = "all" }, { rejectWithValue }) => {
         try {
             const response = await axios.get(
                 `${orderUrl}?tab=${tab}`,
@@ -77,7 +102,7 @@ export const getOrders = createAsyncThunk(
 );
 
 export const deleteOrder = createAsyncThunk(
-    'order/deleteOrder',
+    "order/deleteOrder",
     async ({ orderId }, { rejectWithValue }) => {
         try {
             const response = await axios.delete(
@@ -101,7 +126,7 @@ export const deleteOrder = createAsyncThunk(
 );
 
 export const setReadyOrder = createAsyncThunk(
-    'order/setReadyOrder',
+    "order/setReadyOrder",
     async ({ orderId }, { rejectWithValue }) => {
         try {
             console.log(orderId);
@@ -127,7 +152,7 @@ export const setReadyOrder = createAsyncThunk(
 );
 
 export const setDoneOrder = createAsyncThunk(
-    'order/setDoneOrder',
+    "order/setDoneOrder",
     async ({ orderId }, { rejectWithValue }) => {
         try {
             const response = await axios.patch(
@@ -152,7 +177,7 @@ export const setDoneOrder = createAsyncThunk(
 );
 
 const orderSlice = createSlice({
-    name: 'order',
+    name: "order",
     initialState: {
         orders: [],
         tabsInfo: null,
@@ -169,6 +194,8 @@ const orderSlice = createSlice({
         setReadyError: null,
         setDoneLoading: false,
         setDoneError: null,
+        reOrderLoading: false,
+        reOrderError: null,
     },
     extraReducers: (builder) => {
         builder
@@ -196,11 +223,27 @@ const orderSlice = createSlice({
             .addCase(addOrder.fulfilled, (state, action) => {
                 state.addOrderLoading = false;
                 state.addOrderError = null;
-                toast.success('Lên món thành công', { autoClose: 1000 });
+                toast.success("Lên món thành công", { autoClose: 1000 });
             })
             .addCase(addOrder.rejected, (state, action) => {
                 state.addOrderLoading = false;
                 state.addOrderError = action.payload;
+                toast.error(action.payload);
+            })
+
+            //re-order
+            .addCase(reOrder.pending, (state) => {
+                state.reOrderLoading = true;
+                state.reOrderError = null;
+            })
+            .addCase(reOrder.fulfilled, (state, action) => {
+                state.reOrderLoading = false;
+                state.reOrderError = null;
+                toast.success("Đặt lại món thành công", { autoClose: 1000 });
+            })
+            .addCase(reOrder.rejected, (state, action) => {
+                state.reOrderLoading = false;
+                state.reOrderError = action.payload;
                 toast.error(action.payload);
             })
 
@@ -230,7 +273,7 @@ const orderSlice = createSlice({
                 state.deleteOrderLoading = false;
                 state.deleteOrderError = null;
                 state.orders = action.payload.orders;
-                toast.success('Xóa đơn món thành công', { autoClose: 1000 });
+                toast.success("Xóa đơn món thành công", { autoClose: 1000 });
             })
             .addCase(deleteOrder.rejected, (state, action) => {
                 state.deleteOrderLoading = false;
@@ -247,7 +290,7 @@ const orderSlice = createSlice({
                 state.setReadyLoading = false;
                 state.setReadyError = null;
                 state.orders = action.payload.orders;
-                toast.success('Sẵn sàng lên đơn thành công', {
+                toast.success("Sẵn sàng lên đơn thành công", {
                     autoClose: 1000,
                 });
             })
@@ -266,7 +309,7 @@ const orderSlice = createSlice({
                 state.setDoneLoading = false;
                 state.setDoneError = null;
                 state.orders = action.payload.orders;
-                toast.success('Hoàn tất lên đơn thành công', {
+                toast.success("Hoàn tất lên đơn thành công", {
                     autoClose: 1000,
                 });
             })

@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import OrderItem from '../components/common/OrderItem';
-import { closeModal, openModal } from '../slices/loginModalSlice';
-import LoginModal from '../components/modal/LoginModal';
-import { Link } from 'react-router-dom';
-import { orderTabs } from '../constants/orderTabs';
-import { deleteOrder, getOrders } from '../slices/orderSlice';
-import ConfirmModal from '../components/modal/ConfirmModal';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import OrderItem from "../components/common/OrderItem";
+import { closeModal, openModal } from "../slices/loginModalSlice";
+import LoginModal from "../components/modal/LoginModal";
+import { Link } from "react-router-dom";
+import { orderTabs } from "../constants/orderTabs";
+import { deleteOrder, getOrders, reOrder } from "../slices/orderSlice";
+import ConfirmModal from "../components/modal/ConfirmModal";
+import OrderOptionModal from "../components/modal/OrderOptionModal";
+import { formatServeDate, formatServeTimeToVN } from "../utils/ServeDateFormat";
 
 const Order = () => {
     const dispatch = useDispatch();
@@ -16,15 +18,21 @@ const Order = () => {
 
     //modal
     const [isShowModal, setIsShowModal] = useState(false);
-    const [title, setTitle] = useState('');
-    const [content, setContent] = useState('');
+    const [title, setTitle] = useState("");
+    const [content, setContent] = useState("");
     const [isDanger, setIsDanger] = useState(false);
-    const [orderId, setOrderId] = useState('');
+    const [orderId, setOrderId] = useState("");
     const [actionFunction, setActionFunction] = useState(null);
+
+    //re-order modal
+    const [isShowReOrderModal, setIsShowReOrderModal] = useState(false);
+    const [serveDate, setServeDate] = useState(null);
+    const [serveTime, setServeTime] = useState("");
+    const [note, setNote] = useState("");
 
     //check if user logged in
     useEffect(() => {
-        const storedUser = localStorage.getItem('user');
+        const storedUser = localStorage.getItem("user");
         if (storedUser && !JSON.parse(storedUser).isAdmin) {
             setUser(JSON.parse(storedUser));
             dispatch(closeModal());
@@ -36,7 +44,7 @@ const Order = () => {
 
     //on login success
     const onLoginSuccess = () => {
-        const storedUser = localStorage.getItem('user');
+        const storedUser = localStorage.getItem("user");
         setUser(JSON.parse(storedUser));
         dispatch(closeModal());
         dispatch(getOrders());
@@ -52,7 +60,7 @@ const Order = () => {
         dispatch(getOrders({ tab: orderTabs[selectedTab].tab }));
     }, [dispatch, selectedTab]);
 
-    //#region handle with modal
+    //#region handle with modal [confirm]
     //handle confirm modal
     const handleCloseModal = () => {
         setIsShowModal(false);
@@ -74,19 +82,59 @@ const Order = () => {
     };
 
     const handleConfirmModal = () => {
-        if (actionFunction === 'delete')
-            dispatch(deleteOrder({ orderId }))
+        const dispatchAction =
+            actionFunction === "delete"
+                ? dispatch(deleteOrder({ orderId }))
+                : actionFunction === "reorder"
+                ? dispatch(reOrder({ orderId, serveDate, serveTime, note }))
+                : null;
+        dispatchAction &&
+            dispatchAction
                 .then((response) => {
-                    if (response.meta.requestStatus === 'fulfilled') {
+                    if (response.meta.requestStatus === "fulfilled") {
                         dispatch(
                             getOrders({ tab: orderTabs[selectedTab].tab })
                         );
                         setIsShowModal(false);
+                        setNote("");
+                        setServeDate(null);
+                        setServeTime("");
+                        setOrderId("");
                     }
                 })
                 .catch((error) => {
-                    console.error('Login failed:', error);
+                    console.error("error:", error);
                 });
+    };
+
+    //#endregion
+
+    //#region re order modal
+    //submit modal
+    const handleSubmitReOrderModal = ({ serveDate, serveTime, note }) => {
+        // alert(`${serveDate}, ${serveTime}, ${note}`);
+        setServeDate(serveDate);
+        setServeTime(serveTime);
+        setNote(note);
+        handleOpenModal(
+            "reorder",
+            orderId,
+            `Đặt lại đơn`,
+            `Đặt lại vào ${formatServeTimeToVN(serveTime)} ${formatServeDate(
+                serveDate
+            )} nhé?`
+        );
+    };
+
+    //close modal
+    const handleCloseReOrderModal = () => {
+        setIsShowReOrderModal(false);
+    };
+
+    //open modal
+    const handleOpenReOrderModal = (orderId) => {
+        setOrderId(orderId);
+        setIsShowReOrderModal(true);
     };
 
     //#endregion
@@ -114,8 +162,8 @@ const Order = () => {
                                             }
                                             className={
                                                 index === selectedTab
-                                                    ? 'nav-link text-primary text-center active'
-                                                    : 'nav-link text-dark text-center'
+                                                    ? "nav-link text-primary text-center active"
+                                                    : "nav-link text-dark text-center"
                                             }
                                         >
                                             {tab.text} (
@@ -142,6 +190,9 @@ const Order = () => {
                                         key={order._id}
                                         order={order}
                                         handleOpenModal={handleOpenModal}
+                                        handleOpenReOrderModal={
+                                            handleOpenReOrderModal
+                                        }
                                     />
                                 ))}
                             </div>
@@ -156,6 +207,11 @@ const Order = () => {
                 title={title}
                 content={content}
                 danger={isDanger}
+            />
+            <OrderOptionModal
+                show={isShowReOrderModal}
+                handleSubmit={handleSubmitReOrderModal}
+                handleClose={handleCloseReOrderModal}
             />
         </>
     );

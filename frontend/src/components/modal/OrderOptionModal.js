@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import Modal from 'react-modal';
-import { getServeTime } from '../../slices/orderSlice';
-import { formatServeTimeToVN } from '../../utils/ServeDateFormat';
-import { customStyles } from '../../constants/modal';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import Modal from "react-modal";
+import { getServeTime } from "../../slices/orderSlice";
+import { formatServeTimeToVN } from "../../utils/ServeDateFormat";
+import { customStyles } from "../../constants/modal";
 
 const OrderModal = ({ show, handleClose, handleSubmit }) => {
     const dispatch = useDispatch();
     const [day, setDay] = useState(0);
     const { availableTimes } = useSelector((state) => state.order);
     const [selectedDate, setSelectedDate] = useState(null);
-    const [selectedTime, setSelectedTime] = useState('');
-    const [note, setNote] = useState('');
+    const [selectedTime, setSelectedTime] = useState("");
+    const [note, setNote] = useState("");
 
     //trigger when day changes
     useEffect(() => {
@@ -92,10 +92,7 @@ const OrderModal = ({ show, handleClose, handleSubmit }) => {
                             {availableTimes ? (
                                 Object.keys(availableTimes).map(
                                     (key, index) => (
-                                        <option
-                                            key={index}
-                                            value={key}
-                                        >
+                                        <option key={index} value={key}>
                                             {formatServeTimeToVN(key)}
                                         </option>
                                     )
