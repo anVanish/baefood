@@ -1,22 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import FoodCard from '../components/common/FoodCard';
-import { useDispatch, useSelector } from 'react-redux';
-import { closeModal, openModal } from '../slices/loginModalSlice';
-import LoginModal from '../components/modal/LoginModal';
-import { getCart } from '../slices/cartSlice';
-import OrderOptionModal from '../components/modal/OrderOptionModal';
-import { addOrder } from '../slices/orderSlice';
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import FoodCard from "../components/common/FoodCard";
+import { useDispatch, useSelector } from "react-redux";
+import { closeModal, openModal } from "../slices/loginModalSlice";
+import LoginModal from "../components/modal/LoginModal";
+import { getCart } from "../slices/cartSlice";
+import OrderOptionModal from "../components/modal/OrderOptionModal";
+import { addOrder } from "../slices/orderSlice";
 
 const Cart = () => {
     const dispatch = useDispatch();
     const { carts } = useSelector((state) => state.cart);
+    const { addOrderLoading } = useSelector((state) => state.order);
     const [user, setUser] = useState(null);
     const [isModalShow, setIsModalShow] = useState(false);
 
     //check if user logged in
     useEffect(() => {
-        const storedUser = localStorage.getItem('user');
+        const storedUser = localStorage.getItem("user");
         if (storedUser && !JSON.parse(storedUser).isAdmin) {
             setUser(JSON.parse(storedUser));
             dispatch(closeModal());
@@ -28,7 +29,7 @@ const Cart = () => {
 
     //on login success
     const onLoginSuccess = () => {
-        const storedUser = localStorage.getItem('user');
+        const storedUser = localStorage.getItem("user");
         setUser(JSON.parse(storedUser));
         dispatch(closeModal());
         dispatch(getCart());
@@ -47,12 +48,11 @@ const Cart = () => {
     //submit order options
     const handleModalSubmit = ({ serveDate, serveTime, note }) => {
         dispatch(addOrder({ serveDate, serveTime, note }))
-            .unwrap()
             .then(() => {
                 dispatch(getCart());
             })
             .catch((error) => {
-                console.error('Order submission failed:', error);
+                console.error("Order submission failed:", error);
             });
     };
 
@@ -88,7 +88,11 @@ const Cart = () => {
                         </div>
                         {carts.length > 0 && (
                             <div className="btn-box">
-                                <Link onClick={handleModalOpen}>Lên món</Link>
+                                <Link onClick={handleModalOpen}>
+                                    {addOrderLoading
+                                        ? "Đang lên món..."
+                                        : "Lên món"}
+                                </Link>
                             </div>
                         )}
                     </div>

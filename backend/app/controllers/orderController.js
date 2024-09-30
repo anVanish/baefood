@@ -1,8 +1,9 @@
-const ApiResponse = require('../utils/ApiResponse');
-const ApiError = require('../utils/ApiError');
-const Orders = require('../models/Orders');
-const Carts = require('../models/Carts');
-const { listOrdersByUserId } = require('../utils/orderAggregate');
+const ApiResponse = require("../utils/ApiResponse");
+const ApiError = require("../utils/ApiError");
+const Orders = require("../models/Orders");
+const Carts = require("../models/Carts");
+const { listOrdersByUserId } = require("../utils/orderAggregate");
+const { sendMail } = require("../utils/MailService");
 
 // /orders/
 //GET /
@@ -10,7 +11,7 @@ exports.myOrders = async (req, res, next) => {
     try {
         const { tab } = req.query;
         const { _id, isAdmin } = req.user;
-        const consideredId = isAdmin ? '' : _id;
+        const consideredId = isAdmin ? "" : _id;
         const orders = await listOrdersByUserId(consideredId, tab);
 
         const idFilter = isAdmin ? {} : { userId: _id };
@@ -39,8 +40,8 @@ exports.myOrders = async (req, res, next) => {
 
         res.json(
             new ApiResponse()
-                .setData('orders', orders)
-                .setData('tabsInfo', tabsInfo)
+                .setData("orders", orders)
+                .setData("tabsInfo", tabsInfo)
         );
     } catch (error) {
         next(error);
@@ -99,7 +100,7 @@ exports.getServeTime = async (req, res, next) => {
             Object.entries(serveDates).filter(([key, value]) => value !== null)
         );
 
-        res.json(new ApiResponse().setData('serveDates', filteredServeDates));
+        res.json(new ApiResponse().setData("serveDates", filteredServeDates));
     } catch (error) {
         next(error);
     }
@@ -109,21 +110,33 @@ exports.getServeTime = async (req, res, next) => {
 exports.addMyOrder = async (req, res, next) => {
     try {
         const userId = req.user._id;
-        const carts = await Carts.find({ userId: userId });
-        if (carts.length === 0) throw new ApiError('Cart is empty', 400);
+        const carts = await Carts.find({ userId: userId }).populate(
+            "foodId",
+            "name"
+        );
+        if (carts.length === 0) throw new ApiError("Cart is empty", 400);
 
-        const foodIds = carts.map((item) => {
-            return item.foodId;
+        let listFood = "";
+        const foodIds = carts.map((item, index) => {
+            listFood += `${index + 1}: ${item.foodId.name}`;
+            return item.foodId._id;
         });
         const order = new Orders({ ...req.body, userId, foodIds });
         await order.save();
 
         await Carts.deleteMany({});
 
+        //send email after order successfully
+        await sendMail(
+            "sosvanish@gmail.com",
+            "Đơn hàng mới cho bé iu",
+            "Nhanh tay kiểm tra đơn hàng mới nào: \n" + listFood
+        );
+
         res.json(
             new ApiResponse()
-                .setSuccess('Ordered successfully')
-                .setData('order', order)
+                .setSuccess("Ordered successfully")
+                .setData("order", order)
         );
     } catch (error) {
         next(error);
@@ -135,14 +148,14 @@ exports.deleteMyOrder = async (req, res, next) => {
     try {
         const { orderId } = req.params;
         const order = await Orders.findOneAndDelete({ _id: orderId });
-        if (!order) throw new ApiError('Order not found', 404);
+        if (!order) throw new ApiError("Order not found", 404);
 
         const orders = await listOrdersByUserId(req.user._id);
 
         res.json(
             new ApiResponse()
-                .setSuccess('Order canceled')
-                .setData('orders', orders)
+                .setSuccess("Order canceled")
+                .setData("orders", orders)
         );
     } catch (error) {
         next(error);
@@ -157,9 +170,9 @@ exports.setReadyOrder = async (req, res, next) => {
             { _id: orderId, isReady: false },
             { isReady: true }
         );
-        if (!order) throw new ApiError('Order not found', 404);
+        if (!order) throw new ApiError("Order not found", 404);
 
-        res.json(new ApiResponse().setSuccess('Order set to ready'));
+        res.json(new ApiResponse().setSuccess("Order set to ready"));
     } catch (error) {
         next(error);
     }
@@ -173,9 +186,9 @@ exports.setDoneOrder = async (req, res, next) => {
             { _id: orderId, isDone: false },
             { isDone: true }
         );
-        if (!order) throw new ApiError('Order not found', 404);
+        if (!order) throw new ApiError("Order not found", 404);
 
-        res.json(new ApiResponse().setSuccess('Order set to done'));
+        res.json(new ApiResponse().setSuccess("Order set to done"));
     } catch (error) {
         next(error);
     }
