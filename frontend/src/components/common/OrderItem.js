@@ -101,7 +101,7 @@ const OrderItem = ({
                     <div className="d-flex mx-3 mt-2">
                         <h6>note: {order.note}</h6>
                     </div>
-                    {(order.isDone || order.isExpired) && (
+                    {!isAdmin && (order.isDone || order.isExpired) && (
                         <div className="text-center mt-3">
                             <Link
                                 className="btn btn-root"
