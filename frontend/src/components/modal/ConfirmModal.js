@@ -1,6 +1,6 @@
-import React from 'react';
-import Modal from 'react-modal';
-import { customStyles } from '../../constants/modal';
+import React from "react";
+import Modal from "react-modal";
+import { customStyles } from "../../constants/modal";
 
 const ConfirmModal = ({
     show,
@@ -9,6 +9,7 @@ const ConfirmModal = ({
     handleConfirmModal,
     handleCloseModal,
     danger = false,
+    loading = false,
 }) => {
     return (
         <Modal
@@ -34,15 +35,15 @@ const ConfirmModal = ({
                     <button
                         className={
                             danger
-                                ? 'btn btn-danger btn-round mt-4'
-                                : 'btn btn-root btn-round mt-4'
+                                ? "btn btn-danger btn-round mt-4"
+                                : "btn btn-root btn-round mt-4"
                         }
                         onClick={(e) => {
                             e.preventDefault();
                             handleConfirmModal();
                         }}
                     >
-                        Xác nhận
+                        {loading ? "Xác nhận..." : "Xác nhận"}
                     </button>
                 </div>
             </form>

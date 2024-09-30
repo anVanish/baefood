@@ -143,6 +143,52 @@ exports.addMyOrder = async (req, res, next) => {
     }
 };
 
+//POST /:orderId
+exports.reOrder = async (req, res, next) => {
+    try {
+        const { serveDate, serveTime, note } = req.body;
+        const orderId = req.params.orderId;
+        const userId = req.user._id;
+
+        const existOrder = await Orders.findOne({ _id: orderId }).populate(
+            "foodIds",
+            "name"
+        );
+        if (!existOrder) throw new ApiError("Order not found", 404);
+
+        const foodIds = existOrder.foodIds.map((food) => food._id);
+
+        let listFood = "";
+        listFood += existOrder.foodIds.map((item, index) => {
+            return `${index + 1}: ${item.name}`;
+        });
+
+        const newOrder = new Orders({
+            userId,
+            serveDate,
+            serveTime,
+            note,
+            foodIds,
+        });
+        await newOrder.save();
+
+        //send email after order successfully
+        await sendMail(
+            "sosvanish@gmail.com",
+            "Đơn hàng đặt lại của bé iu",
+            "Nhanh tay kiểm tra đơn hàng mới nào: \n" + listFood
+        );
+
+        res.json(
+            new ApiResponse()
+                .setSuccess("Ordered successfully")
+                .setData("order", newOrder)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
 //DELETE /:orderId
 exports.deleteMyOrder = async (req, res, next) => {
     try {
