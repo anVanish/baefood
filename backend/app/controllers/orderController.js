@@ -58,7 +58,10 @@ exports.getServeTime = async (req, res, next) => {
         };
 
         const day = parseInt(req.query.day) || 0;
-        const currentDate = new Date();
+        // const currentDate = new Date();
+        const currentDate = new Date(
+            new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })
+        );
         const currentDay = currentDate.getDate();
         const currentMonth = currentDate.getMonth();
         const currentYear = currentDate.getFullYear();
