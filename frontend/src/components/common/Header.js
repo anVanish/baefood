@@ -30,6 +30,9 @@ const Header = () => {
                             {/* <!-- option  --> */}
                             <div className="" id="">
                                 <div className="user_option">
+                                    <Link to="/admin/" className="user_link">
+                                        Món ăn
+                                    </Link>
                                     <Link
                                         to="/admin/categories"
                                         className="user_link"
