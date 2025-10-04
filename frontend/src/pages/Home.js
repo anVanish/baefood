@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import FoodCard from '../components/common/FoodCard';
-import { useDispatch, useSelector } from 'react-redux';
-import { closeModal, openModal } from '../slices/loginModalSlice';
-import LoginModal from '../components/modal/LoginModal';
-import { getFoods } from '../slices/foodSlice';
-import { getCategories } from '../slices/categorySlice';
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import FoodCard from "../components/common/FoodCard";
+import { useDispatch, useSelector } from "react-redux";
+import { closeModal, openModal } from "../slices/loginModalSlice";
+import LoginModal from "../components/modal/LoginModal";
+import { getFoods } from "../slices/foodSlice";
+import { getCategories } from "../slices/categorySlice";
 
 const Home = () => {
     const dispatch = useDispatch();
@@ -20,19 +20,19 @@ const Home = () => {
     } = useSelector((state) => state.food);
     const { categories } = useSelector((state) => state.category);
 
-    const [activeCategory, setActiveCategory] = useState('');
+    const [activeCategory, setActiveCategory] = useState("");
     const [displayedFoods, setDisplayedFoods] = useState([]);
 
     // Initial data load
     const initData = () => {
         setDisplayedFoods([]);
-        dispatch(getFoods({ categoryId: '', page: 0 }));
+        dispatch(getFoods({ categoryId: "", page: 0 }));
         dispatch(getCategories());
     };
 
     useEffect(() => {
         //check if user logged in
-        const storedUser = localStorage.getItem('user');
+        const storedUser = localStorage.getItem("user");
         if (storedUser && !JSON.parse(storedUser).isAdmin) {
             setUser(JSON.parse(storedUser));
             dispatch(closeModal());
@@ -44,7 +44,7 @@ const Home = () => {
 
     //on login success
     const onLoginSuccess = () => {
-        const storedUser = localStorage.getItem('user');
+        const storedUser = localStorage.getItem("user");
         setUser(JSON.parse(storedUser));
         dispatch(closeModal());
         initData();
@@ -68,7 +68,9 @@ const Home = () => {
 
     // View more button handler
     const viewMore = () => {
-        dispatch(getFoods({ page: page + 1, categoryId: activeCategory }));
+        dispatch(
+            getFoods({ page: parseInt(page) + 1, categoryId: activeCategory })
+        );
     };
 
     return (
@@ -85,9 +87,9 @@ const Home = () => {
                         <ul className="filters_menu">
                             <li
                                 className={
-                                    activeCategory === '' ? 'active' : ''
+                                    activeCategory === "" ? "active" : ""
                                 }
-                                onClick={() => filterByCategory('')}
+                                onClick={() => filterByCategory("")}
                             >
                                 Tất cả
                             </li>
@@ -96,8 +98,8 @@ const Home = () => {
                                     key={cate._id}
                                     className={
                                         activeCategory === cate._id
-                                            ? 'active'
-                                            : ''
+                                            ? "active"
+                                            : ""
                                     }
                                     onClick={() => filterByCategory(cate._id)}
                                 >
@@ -111,7 +113,7 @@ const Home = () => {
                                 {foodLoading ? (
                                     <p>Loading...</p>
                                 ) : foodError ? (
-                                    <p style={{ color: 'red' }}>{foodError}</p>
+                                    <p style={{ color: "red" }}>{foodError}</p>
                                 ) : displayedFoods.length === 0 ? (
                                     <div className="col-sm-12 col-lg-12">
                                         <p className="text-center pt-4">
@@ -120,10 +122,7 @@ const Home = () => {
                                     </div>
                                 ) : (
                                     displayedFoods.map((food) => (
-                                        <FoodCard
-                                            key={food._id}
-                                            food={food}
-                                        />
+                                        <FoodCard key={food._id} food={food} />
                                     ))
                                 )}
                             </div>

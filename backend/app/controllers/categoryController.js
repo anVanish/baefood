@@ -26,7 +26,7 @@ exports.listCategories = async (req, res, next) => {
                     foods: 0,
                 },
             },
-            { $sort: { isOther: 1 } },
+            { $sort: { isOther: 1, updatedAt: -1 } },
         ]);
         res.json(
             new ApiResponse()

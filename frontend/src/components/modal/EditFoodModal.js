@@ -14,7 +14,7 @@ const EditFoodModal = ({
     const [description, setDescription] = useState(
         isAddFood ? "" : food && food.description
     );
-    const [chef, setChef] = useState(isAddFood ? "" : food && food.chef);
+    const [chef, setChef] = useState(isAddFood ? "Destiny" : food && food.chef);
     const [imageLink, setImageLink] = useState(
         isAddFood ? "" : food && food.imageLink
     );
@@ -46,6 +46,9 @@ const EditFoodModal = ({
     const handleConfirmButton = (e) => {
         e.preventDefault();
         handleConfirmModal(name, categoryId, description, chef, imageLink);
+        setName("");
+        setDescription("");
+        setImageLink("");
     };
 
     const handleChangeCategory = (e) => {
@@ -62,7 +65,7 @@ const EditFoodModal = ({
             <h2 className="mb-4">
                 {isAddFood ? "Thêm món ăn" : "Cập nhật tên món"}
             </h2>
-            <form autocomplete="off">
+            <form autoComplete="off">
                 <div>
                     <label htmlFor="name">Tên món</label>
                     <input
@@ -89,14 +92,17 @@ const EditFoodModal = ({
                             ))}
                     </select>
                     <label htmlFor="chef">Đầu bếp</label>
-                    <input
+                    <select
                         id="chef"
                         name="chef"
-                        className="form-control mb-3"
-                        placeholder="Đầu bếp..."
-                        value={chef || ""}
+                        value={chef}
                         onChange={(e) => setChef(e.target.value)}
-                    />
+                    >
+                        <option value="Destiny">Destiny</option>
+                        <option value="BumBim">BumBim</option>
+                        <option value="Ăn tiệm">Ăn tiệm</option>
+                    </select>
+
                     <label htmlFor="description">Mô tả</label>
                     <input
                         id="description"
@@ -119,16 +125,16 @@ const EditFoodModal = ({
                 </div>
                 <div className="d-flex justify-content-between">
                     <button
-                        className="btn btn-secondary btn-round mt-4 mr-4"
-                        onClick={(e) => handleCancelButton(e)}
-                    >
-                        Hủy
-                    </button>
-                    <button
-                        className="btn btn-success btn-round mt-4"
+                        className="btn btn-success btn-round mt-4 mr-4"
                         onClick={(e) => handleConfirmButton(e)}
                     >
                         {isAddFood ? "Thêm món" : "Cập nhật"}
+                    </button>
+                    <button
+                        className="btn btn-secondary btn-round mt-4"
+                        onClick={(e) => handleCancelButton(e)}
+                    >
+                        Hủy
                     </button>
                 </div>
             </form>

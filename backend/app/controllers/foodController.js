@@ -1,6 +1,6 @@
-const ApiError = require('../utils/ApiError');
-const ApiResponse = require('../utils/ApiResponse');
-const Foods = require('../models/Foods');
+const ApiError = require("../utils/ApiError");
+const ApiResponse = require("../utils/ApiResponse");
+const Foods = require("../models/Foods");
 
 // /foods/
 //GET /
@@ -15,17 +15,17 @@ exports.listFood = async (req, res, next) => {
         const foods = await Foods.find(filter)
             .skip(page * limit)
             .limit(limit)
-            .populate('categoryId', 'name')
+            .populate("categoryId", "name")
             .sort({ updatedAt: -1 });
 
         const total = await Foods.countDocuments(filter);
 
         res.json(
             new ApiResponse()
-                .setData('total', total)
-                .setData('limit', limit)
-                .setData('page', page)
-                .setData('foods', foods)
+                .setData("total", total)
+                .setData("limit", limit)
+                .setData("page", page)
+                .setData("foods", foods)
         );
     } catch (error) {
         next(error);
@@ -38,7 +38,7 @@ exports.addFood = async (req, res, next) => {
         const food = new Foods(req.body);
         await food.save();
         res.json(
-            new ApiResponse().setData('food', food).setSuccess('Food added')
+            new ApiResponse().setData("food", food).setSuccess("Food added")
         );
     } catch (error) {
         next(error);
@@ -52,10 +52,10 @@ exports.updateFood = async (req, res, next) => {
         const food = await Foods.findOneAndUpdate({ _id: foodId }, req.body, {
             new: true,
         });
-        if (!food) throw new ApiError('Food not found', 404);
+        if (!food) throw new ApiError("Food not found", 404);
 
         res.json(
-            new ApiResponse().setSuccess('Food updated').setData('food', food)
+            new ApiResponse().setSuccess("Food updated").setData("food", food)
         );
     } catch (error) {
         next(error);
@@ -67,9 +67,9 @@ exports.deleteFood = async (req, res, next) => {
     try {
         const { foodId } = req.params;
         const food = await Foods.findOneAndDelete({ _id: foodId });
-        if (!food) throw new ApiError('Food not found', 404);
+        if (!food) throw new ApiError("Food not found", 404);
 
-        res.json(new ApiResponse().setSuccess('Food deleted'));
+        res.json(new ApiResponse().setSuccess("Food deleted"));
     } catch (error) {
         next(error);
     }
