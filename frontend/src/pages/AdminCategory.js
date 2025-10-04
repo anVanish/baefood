@@ -153,6 +153,7 @@ const AdminFood = () => {
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Danh mục</th>
+                                    <th scope="col">Số lượng món</th>
                                     <th scope="col">Thao tác</th>
                                 </tr>
                             </thead>
@@ -162,36 +163,41 @@ const AdminFood = () => {
                                         <tr key={cate._id}>
                                             <th scope="row">{index + 1}</th>
                                             <td>{cate.name}</td>
-                                            <td>
-                                                {/* edit button */}
-                                                <Link
-                                                    onClick={() =>
-                                                        handleOpenEditModal(
-                                                            cate
-                                                        )
-                                                    }
-                                                    className="user_link"
-                                                >
-                                                    <i
-                                                        className="fa fa-edit text-success food-management-btn mr-3"
-                                                        aria-hidden="true"
-                                                    ></i>
-                                                </Link>
-                                                {/* delete button */}
-                                                <Link
-                                                    onClick={() =>
-                                                        handleOpenDeleteModal(
-                                                            cate
-                                                        )
-                                                    }
-                                                    className="user_link"
-                                                >
-                                                    <i
-                                                        className="h1 fa fa-trash text-danger food-management-btn"
-                                                        aria-hidden="true"
-                                                    ></i>
-                                                </Link>
-                                            </td>
+                                            <td>{cate.foodCount}</td>
+                                            {cate.isOther ? (
+                                                <td></td>
+                                            ) : (
+                                                <td>
+                                                    {/* edit button */}
+                                                    <Link
+                                                        onClick={() =>
+                                                            handleOpenEditModal(
+                                                                cate
+                                                            )
+                                                        }
+                                                        className="user_link"
+                                                    >
+                                                        <i
+                                                            className="fa fa-edit text-success food-management-btn mr-3"
+                                                            aria-hidden="true"
+                                                        ></i>
+                                                    </Link>
+                                                    {/* delete button */}
+                                                    <Link
+                                                        onClick={() =>
+                                                            handleOpenDeleteModal(
+                                                                cate
+                                                            )
+                                                        }
+                                                        className="user_link"
+                                                    >
+                                                        <i
+                                                            className="h1 fa fa-trash text-danger food-management-btn"
+                                                            aria-hidden="true"
+                                                        ></i>
+                                                    </Link>
+                                                </td>
+                                            )}
                                         </tr>
                                     ))
                                 ) : (
