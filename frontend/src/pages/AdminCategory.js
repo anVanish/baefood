@@ -1,13 +1,16 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { closeModal, openModal } from "../slices/loginModalSlice";
 import LoginModal from "../components/modal/LoginModal";
-import { getFoods, updateFood, deleteFood, addFood } from "../slices/foodSlice";
-import { getCategories } from "../slices/categorySlice";
-import { formatServeDate } from "../utils/ServeDateFormat";
+import {
+    getCategories,
+    updateCategory,
+    deleteCategory,
+    addCategory,
+} from "../slices/categorySlice";
 import ConfirmModal from "../components/modal/ConfirmModal";
-import EditFoodModal from "../components/modal/EditFoodModal";
+import EditCategoryModal from "../components/modal/EditCategoryModal";
 
 const AdminFood = () => {
     const dispatch = useDispatch();
@@ -15,17 +18,13 @@ const AdminFood = () => {
     const [isDeleteModalShow, setIsDeleteModalShow] = useState(false);
     const [isEditModalShow, setIsEditModalShow] = useState(false);
     const [isAddModalShow, setIsAddModalShow] = useState(false);
-    const [selectedFood, setSelectedFood] = useState(null);
-    const [selectedCategory, setSelectedCategory] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState(null);
 
-    //get foods
-    const { foods } = useSelector((state) => state.food);
     //get categories
     const { categories } = useSelector((state) => state.category);
 
     //initial data load
     const initData = useCallback(() => {
-        dispatch(getFoods({ categoryId: "", limit: 100 }));
         dispatch(getCategories());
     }, [dispatch]);
     useEffect(() => {
@@ -47,25 +46,23 @@ const AdminFood = () => {
         initData();
     };
 
-    // #region handle delete food modal action------------
-    const handleOpenDeleteModal = (food) => {
+    // #region handle delete category modal action
+    const handleOpenDeleteModal = (category) => {
         setIsDeleteModalShow(true);
-        setSelectedFood(food);
+        setSelectedCategory(category);
     };
 
     const handleCloseDeleteModal = () => {
         setIsDeleteModalShow(false);
-        setSelectedFood(null);
+        setSelectedCategory(null);
     };
 
     const handleConfirmDeleteModal = () => {
-        dispatch(deleteFood({ foodId: selectedFood._id }))
+        dispatch(deleteCategory({ categoryId: selectedCategory._id }))
             .then((response) => {
                 if (response.meta.requestStatus === "fulfilled") {
                     setIsDeleteModalShow(false);
-                    dispatch(
-                        getFoods({ categoryId: selectedCategory, limit: 100 })
-                    );
+                    dispatch(getCategories());
                 }
             })
             .catch((error) => {
@@ -74,32 +71,24 @@ const AdminFood = () => {
     };
     //#endregion
 
-    // #region handle add food modal action------------
-    const handleOpenAddModal = (food) => {
+    // #region handle add category modal action
+    const handleOpenAddModal = () => {
         setIsAddModalShow(true);
-        setSelectedFood(food);
+        setSelectedCategory();
     };
 
     const handleCloseAddModal = () => {
         setIsAddModalShow(false);
-        setSelectedFood(null);
+        setSelectedCategory(null);
     };
 
-    const handleConfirmAddModal = (
-        name,
-        categoryId,
-        description,
-        chef,
-        imageLink
-    ) => {
-        const food = { name, categoryId, description, chef, imageLink };
-        dispatch(addFood({ food }))
+    const handleConfirmAddModal = (name) => {
+        const category = { name };
+        dispatch(addCategory({ category }))
             .then((response) => {
                 if (response.meta.requestStatus === "fulfilled") {
                     setIsAddModalShow(false);
-                    dispatch(
-                        getFoods({ categoryId: selectedCategory, limit: 100 })
-                    );
+                    dispatch(getCategories());
                 }
             })
             .catch((error) => {
@@ -108,39 +97,27 @@ const AdminFood = () => {
     };
     //#endregion
 
-    // #region handle edit food modal action------------
-    const handleOpenEditModal = (food) => {
+    // #region handle edit food modal action
+    const handleOpenEditModal = (category) => {
         setIsEditModalShow(true);
-        setSelectedFood(food);
+        setSelectedCategory(category);
     };
 
     const handleCloseEditModal = () => {
         setIsEditModalShow(false);
-        setSelectedFood(null);
+        setSelectedCategory(null);
     };
 
-    const handleConfirmEditModal = (
-        name,
-        categoryId,
-        description,
-        chef,
-        imageLink
-    ) => {
-        const food = {
-            _id: selectedFood._id,
+    const handleConfirmEditModal = (name) => {
+        const category = {
+            _id: selectedCategory._id,
             name,
-            categoryId,
-            description,
-            chef,
-            imageLink,
         };
-        dispatch(updateFood({ food }))
+        dispatch(updateCategory({ category }))
             .then((response) => {
                 if (response.meta.requestStatus === "fulfilled") {
                     setIsEditModalShow(false);
-                    dispatch(
-                        getFoods({ categoryId: selectedCategory, limit: 100 })
-                    );
+                    dispatch(getCategories());
                 }
             })
             .catch((error) => {
@@ -149,25 +126,6 @@ const AdminFood = () => {
     };
     //#endregion
 
-    // #region change category
-    // const handleChangeCategory = (e) => {
-    //     setSelectedCategory(e.target.value);
-    // };
-    const handleChangeCategory = useCallback(
-        (e) => {
-            const newCategory = e.target.value;
-            setSelectedCategory(newCategory);
-            dispatch(getFoods({ categoryId: newCategory, limit: 100 }));
-        },
-        [dispatch]
-    );
-
-    //update foods when category changes
-    useEffect(() => {
-        if (selectedCategory)
-            dispatch(getFoods({ categoryId: selectedCategory, limit: 100 }));
-        else dispatch(getFoods({ categoryId: "", limit: 100 }));
-    }, [selectedCategory, dispatch]);
     //#endregion
 
     return (
@@ -178,7 +136,7 @@ const AdminFood = () => {
                 <section className="food_section layout_padding">
                     <div className="container">
                         <div className="heading_container heading_center mb-2">
-                            <h2>Danh sách món của Bếp Iu</h2>
+                            <h2>Danh mục món của Bếp Iu</h2>
                         </div>
                         <div className="d-flex my-4 justify-content-between">
                             <div className="col-sm-4 col-lg-2">
@@ -186,74 +144,30 @@ const AdminFood = () => {
                                     className="btn btn-root btn-round"
                                     onClick={handleOpenAddModal}
                                 >
-                                    Thêm món
+                                    Thêm danh mục
                                 </button>
-                            </div>
-                            <div className="col-sm-6 col-lg-4 d-flex  align-items-center">
-                                <label htmlFor="categoryId" className="w-100">
-                                    Lọc theo danh mục:
-                                </label>
-                                <select
-                                    id="categoryId"
-                                    name="categoryId"
-                                    value={selectedCategory}
-                                    onChange={(e) => handleChangeCategory(e)}
-                                >
-                                    <option value={""}>Tất cả</option>
-                                    {categories &&
-                                        categories.length > 0 &&
-                                        categories.map((cate) => (
-                                            <option
-                                                key={cate._id}
-                                                value={cate._id}
-                                            >
-                                                {cate.name}
-                                            </option>
-                                        ))}
-                                </select>
                             </div>
                         </div>
                         <table className="table">
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Ảnh</th>
-                                    <th scope="col">Món ăn</th>
-                                    <th scope="col">Đầu bếp</th>
                                     <th scope="col">Danh mục</th>
-                                    <th scope="col">Ngày đăng</th>
                                     <th scope="col">Thao tác</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {foods && foods.length > 0 ? (
-                                    foods.map((food, index) => (
-                                        <tr key={food._id}>
+                                {categories && categories.length > 0 ? (
+                                    categories.map((cate, index) => (
+                                        <tr key={cate._id}>
                                             <th scope="row">{index + 1}</th>
-                                            <th>
-                                                <img
-                                                    src={food.imageLink}
-                                                    alt="Món ăn"
-                                                    className="food-management-img"
-                                                ></img>
-                                            </th>
-                                            <td>{food.name}</td>
-                                            <td>{food.chef}</td>
-                                            <td>
-                                                {food.categoryId &&
-                                                    food.categoryId.name}
-                                            </td>
-                                            <td>
-                                                {formatServeDate(
-                                                    food.createdAt
-                                                )}
-                                            </td>
+                                            <td>{cate.name}</td>
                                             <td>
                                                 {/* edit button */}
                                                 <Link
                                                     onClick={() =>
                                                         handleOpenEditModal(
-                                                            food
+                                                            cate
                                                         )
                                                     }
                                                     className="user_link"
@@ -267,7 +181,7 @@ const AdminFood = () => {
                                                 <Link
                                                     onClick={() =>
                                                         handleOpenDeleteModal(
-                                                            food
+                                                            cate
                                                         )
                                                     }
                                                     className="user_link"
@@ -282,9 +196,7 @@ const AdminFood = () => {
                                     ))
                                 ) : (
                                     <tr className="text-center">
-                                        <td colSpan={8}>
-                                            Không có sản phẩm nào bé ơi
-                                        </td>
+                                        <td colSpan={8}>Danh mục trống</td>
                                     </tr>
                                 )}
                             </tbody>
@@ -293,26 +205,26 @@ const AdminFood = () => {
                 </section>
             )}
             <ConfirmModal
-                title={"Xóa món ăn!"}
-                content={"Bạn có chắc chắn xóa?"}
+                title={`Xóa danh mục ${
+                    selectedCategory && selectedCategory.name
+                }`}
+                content={`Bạn có chắc chắn xóa?`}
                 show={isDeleteModalShow}
                 handleCloseModal={handleCloseDeleteModal}
                 handleConfirmModal={handleConfirmDeleteModal}
                 danger={true}
             />
-            <EditFoodModal
+            <EditCategoryModal
                 show={isEditModalShow}
                 handleCloseModal={handleCloseEditModal}
                 handleConfirmModal={handleConfirmEditModal}
-                food={selectedFood}
-                categories={categories}
+                category={selectedCategory}
             />
-            <EditFoodModal
+            <EditCategoryModal
                 show={isAddModalShow}
                 handleCloseModal={handleCloseAddModal}
                 handleConfirmModal={handleConfirmAddModal}
-                isAddFood={true}
-                categories={categories}
+                isAddCategory={true}
             />
         </div>
     );

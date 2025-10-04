@@ -1,34 +1,33 @@
-
-class ApiResponse{
-    constructor(){
-        this.success = true
-        this.message = ''
-        this.data = {}
+class ApiResponse {
+    constructor() {
+        this.success = true;
+        this.message = "";
+        this.data = {};
     }
 
-    setSuccess(message=''){
-        this.message = message
-        this.success = true
-        return this
-    } 
-
-    setError(message=''){
-        this.message = message
-        this.success = false
-        return this
+    setSuccess(message = "") {
+        this.message = message;
+        this.success = true;
+        return this;
     }
 
-    setData(field, data){
-        this.data[field] = data
-        return this
+    setError(message = "") {
+        this.message = message;
+        this.success = false;
+        return this;
     }
 
-    setMultiData(fields, datas){
-        for (let i = 0; i < fields.length; i++){
-            this.data[fields[i]] = datas[i]
+    setData(field, data) {
+        this.data[field] = data;
+        return this;
+    }
+
+    setMultiData(fields, datas) {
+        for (let i = 0; i < fields.length; i++) {
+            this.data[fields[i]] = datas[i];
         }
-        return this
+        return this;
     }
 }
 
-module.exports = ApiResponse
+module.exports = ApiResponse;

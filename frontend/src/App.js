@@ -1,28 +1,29 @@
 // import './assets/styles/App.css';
-import './assets/styles/bootstrap.css';
-import './assets/styles/font-awesome.min.css';
-import './assets/styles/responsive.css';
-import './assets/styles/style.css';
-import 'react-toastify/dist/ReactToastify.css';
+import "./assets/styles/bootstrap.css";
+import "./assets/styles/font-awesome.min.css";
+import "./assets/styles/responsive.css";
+import "./assets/styles/style.css";
+import "react-toastify/dist/ReactToastify.css";
 
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route } from "react-router-dom";
 
-import Header from './components/common/Header';
-import Footer from './components/common/Footer';
+import Header from "./components/common/Header";
+import Footer from "./components/common/Footer";
 
-import Home from './pages/Home';
-import NotFound from './pages/NotFound';
-import Favorite from './pages/Favorite';
-import Order from './pages/Order';
-import Cart from './pages/Cart';
-import AdminFood from './pages/AdminFood';
+import Home from "./pages/Home";
+import NotFound from "./pages/NotFound";
+import Favorite from "./pages/Favorite";
+import Order from "./pages/Order";
+import Cart from "./pages/Cart";
+import AdminFood from "./pages/AdminFood";
+import AdminCategory from "./pages/AdminCategory";
 
-import { useDispatch, useSelector } from 'react-redux';
-import { toast, ToastContainer } from 'react-toastify';
-import LoginModal from './components/modal/LoginModal';
-import { useEffect } from 'react';
-import { clearToast } from './slices/toastSlice';
-import AdminOrder from './pages/AdminOrder';
+import { useDispatch, useSelector } from "react-redux";
+import { toast, ToastContainer } from "react-toastify";
+import LoginModal from "./components/modal/LoginModal";
+import { useEffect } from "react";
+import { clearToast } from "./slices/toastSlice";
+import AdminOrder from "./pages/AdminOrder";
 
 function App() {
     const dispatch = useDispatch();
@@ -44,41 +45,23 @@ function App() {
                 <Header />
                 <main>
                     <Routes>
-                        <Route
-                            exact
-                            path="/"
-                            element={<Home />}
-                        />
-                        <Route
-                            exact
-                            path="/favorites"
-                            element={<Favorite />}
-                        />
-                        <Route
-                            exact
-                            path="/carts"
-                            element={<Cart />}
-                        />
-                        <Route
-                            exact
-                            path="/orders"
-                            element={<Order />}
-                        />
+                        <Route exact path="/" element={<Home />} />
+                        <Route exact path="/favorites" element={<Favorite />} />
+                        <Route exact path="/carts" element={<Cart />} />
+                        <Route exact path="/orders" element={<Order />} />
                         {/* admin */}
-                        <Route
-                            exact
-                            path="/admin"
-                            element={<AdminFood />}
-                        />
+                        <Route exact path="/admin" element={<AdminFood />} />
                         <Route
                             exact
                             path="/admin/orders"
                             element={<AdminOrder />}
                         />
                         <Route
-                            path="*"
-                            element={<NotFound />}
+                            exact
+                            path="/admin/categories"
+                            element={<AdminCategory />}
                         />
+                        <Route path="*" element={<NotFound />} />
                     </Routes>
                 </main>
                 <Footer />

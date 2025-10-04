@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import Modal from 'react-modal';
-import { customStyles } from '../../constants/modal';
+import React, { useEffect, useState } from "react";
+import Modal from "react-modal";
+import { customStyles } from "../../constants/modal";
 
 const EditFoodModal = ({
     show,
@@ -10,19 +10,19 @@ const EditFoodModal = ({
     categories,
     isAddFood = false,
 }) => {
-    const [name, setName] = useState(isAddFood ? '' : food && food.name);
+    const [name, setName] = useState(isAddFood ? "" : food && food.name);
     const [description, setDescription] = useState(
-        isAddFood ? '' : food && food.description
+        isAddFood ? "" : food && food.description
     );
-    const [chef, setChef] = useState(isAddFood ? '' : food && food.chef);
+    const [chef, setChef] = useState(isAddFood ? "" : food && food.chef);
     const [imageLink, setImageLink] = useState(
-        isAddFood ? '' : food && food.imageLink
+        isAddFood ? "" : food && food.imageLink
     );
     const initCategoryId = () => {
         if (isAddFood) {
-            return categories && categories.length > 0 ? categories[0]._id : '';
+            return categories && categories.length > 0 ? categories[0]._id : "";
         }
-        return (food && food.categoryId && food.categoryId._id) || '';
+        return (food && food.categoryId && food.categoryId._id) || "";
     };
     const [categoryId, setCategoryId] = useState(() => initCategoryId());
 
@@ -32,7 +32,7 @@ const EditFoodModal = ({
             setDescription(food.description);
             setChef(food.chef);
             setImageLink(food.imageLink);
-            setCategoryId(food.categoryId ? food.categoryId._id : '');
+            setCategoryId(food.categoryId ? food.categoryId._id : "");
         } else if (isAddFood && categories.length > 0) {
             setCategoryId(categories[0]._id);
         }
@@ -57,10 +57,10 @@ const EditFoodModal = ({
             isOpen={show}
             onRequestClose={handleCloseModal}
             style={customStyles}
-            contentLabel={'Edit Food Modal'}
+            contentLabel={"Edit Food Modal"}
         >
             <h2 className="mb-4">
-                {isAddFood ? 'Thêm món ăn' : 'Cập nhật tên món'}
+                {isAddFood ? "Thêm món ăn" : "Cập nhật tên món"}
             </h2>
             <form autocomplete="off">
                 <div>
@@ -70,7 +70,7 @@ const EditFoodModal = ({
                         name="name"
                         className="form-control mb-3"
                         placeholder="Tên món..."
-                        value={name || ''}
+                        value={name || ""}
                         onChange={(e) => setName(e.target.value)}
                     />
                     <label htmlFor="categoryId">Danh mục</label>
@@ -83,10 +83,7 @@ const EditFoodModal = ({
                         {categories &&
                             categories.length > 0 &&
                             categories.map((cate) => (
-                                <option
-                                    key={cate._id}
-                                    value={cate._id}
-                                >
+                                <option key={cate._id} value={cate._id}>
                                     {cate.name}
                                 </option>
                             ))}
@@ -97,7 +94,7 @@ const EditFoodModal = ({
                         name="chef"
                         className="form-control mb-3"
                         placeholder="Đầu bếp..."
-                        value={chef || ''}
+                        value={chef || ""}
                         onChange={(e) => setChef(e.target.value)}
                     />
                     <label htmlFor="description">Mô tả</label>
@@ -106,7 +103,7 @@ const EditFoodModal = ({
                         name="description"
                         className="form-control mb-3"
                         placeholder="Mô tả..."
-                        value={description || ''}
+                        value={description || ""}
                         onChange={(e) => setDescription(e.target.value)}
                     />
 
@@ -116,7 +113,7 @@ const EditFoodModal = ({
                         name="img"
                         className="form-control mb-3"
                         placeholder="Link ảnh..."
-                        value={imageLink || ''}
+                        value={imageLink || ""}
                         onChange={(e) => setImageLink(e.target.value)}
                     />
                 </div>
@@ -131,7 +128,7 @@ const EditFoodModal = ({
                         className="btn btn-success btn-round mt-4"
                         onClick={(e) => handleConfirmButton(e)}
                     >
-                        {isAddFood ? 'Thêm món' : 'Cập nhật'}
+                        {isAddFood ? "Thêm món" : "Cập nhật"}
                     </button>
                 </div>
             </form>

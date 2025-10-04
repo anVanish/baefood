@@ -27,12 +27,6 @@ const ConfirmModal = ({
                 </div>
                 <div className="d-flex justify-content-between">
                     <button
-                        className="btn btn-secondary btn-round mt-4 mr-4"
-                        onClick={handleCloseModal}
-                    >
-                        Hủy
-                    </button>
-                    <button
                         className={
                             danger
                                 ? "btn btn-danger btn-round mt-4"
@@ -44,6 +38,12 @@ const ConfirmModal = ({
                         }}
                     >
                         {loading ? "Xác nhận..." : "Xác nhận"}
+                    </button>
+                    <button
+                        className="btn btn-secondary btn-round mt-4"
+                        onClick={handleCloseModal}
+                    >
+                        Hủy
                     </button>
                 </div>
             </form>
