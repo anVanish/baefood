@@ -165,7 +165,7 @@ const AdminFood = () => {
                                             <td>{cate.name}</td>
                                             <td>{cate.foodCount}</td>
                                             {cate.isOther ? (
-                                                <td></td>
+                                                <td> </td>
                                             ) : (
                                                 <td>
                                                     {/* edit button */}
