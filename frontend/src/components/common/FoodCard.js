@@ -41,7 +41,11 @@ const FoodCard = ({ food, isCart, checked, onToggle }) => {
             <div className="box">
                 <div>
                     <div className="img-box">
-                        <img src={food.imageLink} alt="Món ăn" />
+                        <img
+                            src={food.imageLink}
+                            alt="Món ăn"
+                            onClick={onToggle}
+                        />
                     </div>
                     <div className="detail-box">
                         <h5>{food.name}</h5>
