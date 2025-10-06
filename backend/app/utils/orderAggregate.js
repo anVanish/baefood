@@ -1,5 +1,5 @@
-const Orders = require('../models/Orders');
-const mongoose = require('mongoose');
+const Orders = require("../models/Orders");
+const mongoose = require("mongoose");
 
 exports.listOrdersByUserId = async (userId, tab) => {
     try {
@@ -22,32 +22,40 @@ exports.listOrdersByUserId = async (userId, tab) => {
                     ...tabsOption[tab],
                 },
             },
-            { $unwind: '$foodIds' },
+            { $unwind: "$foodIds" },
             {
                 $lookup: {
-                    from: 'foods',
-                    localField: 'foodIds',
-                    foreignField: '_id',
-                    as: 'foodIds',
+                    from: "foods",
+                    localField: "foodIds",
+                    foreignField: "_id",
+                    as: "foodIds",
                 },
             },
-            { $unwind: '$foodIds' },
+            { $unwind: "$foodIds" },
             {
                 $group: {
-                    _id: '$_id',
-                    userId: { $first: '$userId' },
-                    serveDate: { $first: '$serveDate' },
-                    serveTime: { $first: '$serveTime' },
-                    note: { $first: '$note' },
-                    foodIds: { $push: '$foodIds' },
-                    createdAt: { $first: '$createdAt' },
-                    updatedAt: { $first: '$updatedAt' },
-                    isExpired: { $first: '$isExpired' },
-                    isReady: { $first: '$isReady' },
-                    isDone: { $first: '$isDone' },
+                    _id: "$_id",
+                    userId: { $first: "$userId" },
+                    serveDate: { $first: "$serveDate" },
+                    serveTime: { $first: "$serveTime" },
+                    note: { $first: "$note" },
+                    foodIds: { $push: "$foodIds" },
+                    createdAt: { $first: "$createdAt" },
+                    updatedAt: { $first: "$updatedAt" },
+                    isExpired: { $first: "$isExpired" },
+                    isReady: { $first: "$isReady" },
+                    isDone: { $first: "$isDone" },
                 },
             },
-            { $sort: { isExpired: 1, isDone: 1, isReady: -1, createdAt: 1 } },
+            {
+                $sort: {
+                    isExpired: 1,
+                    isDone: 1,
+                    isReady: -1,
+                    serveDate: 1,
+                    updatedAt: -1,
+                },
+            },
         ]);
 
         return orders;
