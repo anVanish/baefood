@@ -17,30 +17,15 @@ import Order from "./pages/Order";
 import Cart from "./pages/Cart";
 import AdminFood from "./pages/AdminFood";
 import AdminCategory from "./pages/AdminCategory";
-
-import { useDispatch, useSelector } from "react-redux";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import LoginModal from "./components/modal/LoginModal";
-import { useEffect } from "react";
-import { clearToast } from "./slices/toastSlice";
 import AdminOrder from "./pages/AdminOrder";
 
 function App() {
-    const dispatch = useDispatch();
-    const toastData = useSelector((state) => state.toast);
-
-    useEffect(() => {
-        if (toastData) {
-            const { message, type } = toastData;
-            toast[type](message, { autoClose: 2000 });
-            dispatch(clearToast);
-        }
-    }, [toastData, dispatch]);
-
     return (
         <div className="App">
             <div className="sub_page">
-                <ToastContainer />
+                <ToastContainer autoClose={1000} />
                 <LoginModal />
                 <Header />
                 <main>

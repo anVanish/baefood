@@ -7,6 +7,7 @@ import LoginModal from "../components/modal/LoginModal";
 import { getCart } from "../slices/cartSlice";
 import OrderOptionModal from "../components/modal/OrderOptionModal";
 import { addOrder } from "../slices/orderSlice";
+import { toast } from "react-toastify";
 
 const Cart = () => {
     const dispatch = useDispatch();
@@ -14,6 +15,7 @@ const Cart = () => {
     const { addOrderLoading } = useSelector((state) => state.order);
     const [user, setUser] = useState(null);
     const [isModalShow, setIsModalShow] = useState(false);
+    const [selectedItems, setSelectedItems] = useState([]);
 
     //check if user logged in
     useEffect(() => {
@@ -35,9 +37,21 @@ const Cart = () => {
         dispatch(getCart());
     };
 
+    //handle checkbox select cart item
+    const handleSelectItem = (foodId) => {
+        setSelectedItems((prev) =>
+            prev.includes(foodId)
+                ? prev.filter((id) => id !== foodId)
+                : [...prev, foodId]
+        );
+    };
+
     //open order option modal
     const handleModalOpen = () => {
-        setIsModalShow(true);
+        if (selectedItems.length === 0) toast.error("Chọn món cái bé ơi");
+        else {
+            setIsModalShow(true);
+        }
     };
 
     //close order option modal
@@ -47,7 +61,9 @@ const Cart = () => {
 
     //submit order options
     const handleModalSubmit = ({ serveDate, serveTime, note }) => {
-        dispatch(addOrder({ serveDate, serveTime, note }))
+        dispatch(
+            addOrder({ serveDate, serveTime, note, foodIds: selectedItems })
+        )
             .then(() => {
                 dispatch(getCart());
             })
@@ -82,6 +98,12 @@ const Cart = () => {
                                         key={cart._id}
                                         food={cart.foodId}
                                         isCart={true}
+                                        checked={selectedItems.includes(
+                                            cart.foodId._id
+                                        )}
+                                        onToggle={() =>
+                                            handleSelectItem(cart.foodId._id)
+                                        }
                                     />
                                 ))}
                             </div>

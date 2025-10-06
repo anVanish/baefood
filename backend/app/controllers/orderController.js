@@ -113,28 +113,23 @@ exports.getServeTime = async (req, res, next) => {
 exports.addMyOrder = async (req, res, next) => {
     try {
         const userId = req.user._id;
-        const carts = await Carts.find({ userId: userId }).populate(
-            "foodId",
-            "name"
-        );
-        if (carts.length === 0) throw new ApiError("Cart is empty", 400);
+        const { foodIds } = req.body;
 
-        let listFood = "";
-        const foodIds = carts.map((item, index) => {
-            listFood += `${index + 1}: ${item.foodId.name}`;
-            return item.foodId._id;
-        });
-        const order = new Orders({ ...req.body, userId, foodIds });
+        if (foodIds.length === 0)
+            throw new ApiError("Please select items", 400);
+
+        const order = new Orders({ ...req.body, userId });
+        //save order
         await order.save();
-
-        await Carts.deleteMany({});
+        //delete ordered item from cart
+        await Carts.deleteMany({ userId, foodId: { $in: foodIds } });
 
         //send email after order successfully
-        await sendMail(
-            "sosvanish@gmail.com",
-            "Đơn hàng mới cho bé iu",
-            "Nhanh tay kiểm tra đơn hàng mới nào: \n" + listFood
-        );
+        // await sendMail(
+        //     "sosvanish@gmail.com",
+        //     "Đơn hàng mới cho bé iu",
+        //     "Nhanh tay kiểm tra đơn hàng mới nào: \n" + listFood
+        // );
 
         res.json(
             new ApiResponse()
