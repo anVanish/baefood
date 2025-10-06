@@ -16,7 +16,7 @@ exports.listFood = async (req, res, next) => {
             .skip(page * limit)
             .limit(limit)
             .populate("categoryId", "name")
-            .sort({ updatedAt: -1 });
+            .sort({ popular: -1, updatedAt: -1 });
 
         const total = await Foods.countDocuments(filter);
 
