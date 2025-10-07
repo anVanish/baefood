@@ -1,9 +1,11 @@
-const cron = require('node-cron');
-const Orders = require('../../models/Orders');
+const cron = require("node-cron");
+const Orders = require("../../models/Orders");
 
 async function updateExpiredOrder() {
     try {
-        const now = new Date();
+        const now = new Date().toLocaleString("en-US", {
+            timeZone: "Asia/Ho_Chi_Minh",
+        });
         const result = await Orders.updateMany(
             {
                 isExpired: false,
@@ -16,10 +18,10 @@ async function updateExpiredOrder() {
         );
         console.log(`Updated ${result.modifiedCount} expired orders.`);
     } catch (error) {
-        console.error('Error updating expired orders:', error);
+        console.error("Error updating expired orders:", error);
     }
 }
 
-cron.schedule('0 * * * *', () => {
+cron.schedule("0 * * * *", () => {
     updateExpiredOrder();
 });
