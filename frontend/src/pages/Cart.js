@@ -66,6 +66,7 @@ const Cart = () => {
         )
             .then(() => {
                 dispatch(getCart());
+                setSelectedItems([]);
             })
             .catch((error) => {
                 console.error("Order submission failed:", error);
