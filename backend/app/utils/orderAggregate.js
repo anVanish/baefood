@@ -52,7 +52,7 @@ exports.listOrdersByUserId = async (userId, tab) => {
                     isExpired: 1,
                     isDone: 1,
                     isReady: -1,
-                    serveDate: 1,
+                    serveDate: -1,
                     updatedAt: -1,
                 },
             },
