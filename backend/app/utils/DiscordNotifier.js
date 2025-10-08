@@ -28,7 +28,7 @@ exports.getSuccessOrderMessage = function (order) {
             {
                 title: "🛎️ Có đơn mới admin ơi!",
                 color: 0x00ff00,
-                description: `Một đơn hàng mới vừa được đặt trên hệ thống 💚\n\n👉`,
+                description: `Một đơn hàng mới vừa được đặt trên hệ thống 💚`,
                 fields: [
                     {
                         name: "🕒 Thời gian phục vụ",
