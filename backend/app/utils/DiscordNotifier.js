@@ -57,7 +57,58 @@ exports.getSuccessOrderMessage = function (order) {
     };
 };
 
-exports.getExpiredOrderMessage = function (order) {};
+exports.getUpcomingExpiredOrderMessage = function (orders) {
+    if (!orders) return;
+    if (!orders.length) return;
+
+    const list = orders
+        .map((order) => {
+            const serveDateStr = order.serveDate
+                ? new Date(order.serveDate).toLocaleDateString("vi-VN")
+                : "Không xác định";
+            const serveTimeStr =
+                order.serveTime === "breakfast"
+                    ? "Buổi sáng"
+                    : order.serveTime === "lunch"
+                    ? "Buổi trưa"
+                    : order.serveTime === "dinner"
+                    ? "Buổi tối"
+                    : "Không xác định";
+
+            return `🔹 **${serveTimeStr}**, ${serveDateStr}\n🍱 ${order.foodIds
+                .map((f) => f.name)
+                .join(", ")}\n📝 ${
+                order.note?.trim() || "_(Không có ghi chú)_"
+            }`;
+        })
+        .join("\n\n");
+
+    return {
+        username: "Order Notifier",
+        avatar_url: "https://cdn-icons-png.flaticon.com/512/1046/1046784.png",
+        embeds: [
+            {
+                title: "⏰ Danh sách đơn hàng sắp hết hạn",
+                color: 0xff9900,
+                description:
+                    "Các đơn hàng sắp hết thời gian phục vụ và tự động hết hạn:",
+                fields: [
+                    {
+                        name: "📋 Danh sách đơn",
+                        value: list,
+                        inline: false,
+                    },
+                ],
+                footer: {
+                    text: "Bếp iu – Thông báo đơn sắp hết hạn",
+                    icon_url:
+                        "https://cdn-icons-png.flaticon.com/512/3075/3075977.png",
+                },
+                timestamp: new Date().toISOString(),
+            },
+        ],
+    };
+};
 
 exports.sendDiscordMessage = async function (message) {
     try {
