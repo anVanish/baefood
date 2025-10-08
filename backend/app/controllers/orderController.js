@@ -4,6 +4,10 @@ const Orders = require("../models/Orders");
 const Carts = require("../models/Carts");
 const { listOrdersByUserId } = require("../utils/orderAggregate");
 const { sendMail } = require("../utils/MailService");
+const {
+    getSuccessOrderMessage,
+    sendDiscordMessage,
+} = require("../utils/DiscordNotifier");
 
 // /orders/
 //GET /
@@ -130,6 +134,12 @@ exports.addMyOrder = async (req, res, next) => {
         //     "Đơn hàng mới cho bé iu",
         //     "Nhanh tay kiểm tra đơn hàng mới nào: \n" + listFood
         // );
+
+        //send notification via discord server
+        const message = getSuccessOrderMessage(
+            (await order.populate("foodIds")).toObject()
+        );
+        await sendDiscordMessage(message);
 
         res.json(
             new ApiResponse()
