@@ -71,7 +71,7 @@ exports.getServeTime = async (req, res, next) => {
         const currentYear = currentDate.getFullYear();
         const currentHour = currentDate.getHours();
 
-        const nextDate = new Date(
+        const baseDate = new Date(
             currentYear,
             currentMonth,
             currentDay + day,
@@ -87,9 +87,14 @@ exports.getServeTime = async (req, res, next) => {
             dinner: null,
         };
 
-        const breakfast = new Date(nextDate.setHours(times.breakfast));
-        const lunch = new Date(nextDate.setHours(times.lunch));
-        const dinner = new Date(nextDate.setHours(times.dinner));
+        const breakfast = new Date(baseDate);
+        breakfast.setHours(times.breakfast);
+
+        const lunch = new Date(baseDate);
+        lunch.setHours(times.lunch);
+
+        const dinner = new Date(baseDate);
+        dinner.setHours(times.dinner);
 
         if (day === 0) {
             if (currentHour <= times.breakfast)
@@ -104,7 +109,7 @@ exports.getServeTime = async (req, res, next) => {
 
         //remove null item
         const filteredServeDates = Object.fromEntries(
-            Object.entries(serveDates).filter(([key, value]) => value !== null)
+            Object.entries(serveDates).filter(([_, value]) => value !== null)
         );
 
         res.json(new ApiResponse().setData("serveDates", filteredServeDates));
